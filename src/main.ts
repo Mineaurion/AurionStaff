@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import 'dotenv/config';
 import { Intents, Interaction, Message } from 'discord.js';
 import { Client } from 'discordx';
 import { dirname, importx } from '@discordx/importer';
@@ -58,9 +59,7 @@ const run = async (): Promise<void> => {
   await importx(dirname(import.meta.url) + '/{events,commands}/**/*.{ts,js}');
 
   // let's start the bot
-  const token =
-    process.env.BOT_TOKEN ||
-    'OTQ0NzQzNzU4MjkxOTM1MjUy.YhGDMA.tw-9fjtMjh2kAbCy6cjJxtEB1Io';
+  const token = process.env.BOT_TOKEN;
   if (!token) {
     throw Error('Could not find BOT_TOKEN in your environment');
   }

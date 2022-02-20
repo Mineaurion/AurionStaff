@@ -1,0 +1,150 @@
+import {
+  CommandInteraction,
+  MessageActionRow,
+  SelectMenuInteraction,
+  MessageSelectMenu,
+  MessageButton,
+  ButtonInteraction,
+  MessageEmbed,
+} from 'discord.js';
+import { Discord, Slash, SelectMenuComponent, ButtonComponent } from 'discordx';
+import { getIdFromFields, http } from '../../helper.js';
+import { ServerListReponse } from './interface';
+
+@Discord()
+export abstract class Pterodactyl {
+  @Slash('pterodactyl', { description: 'roles menu' })
+  async pterodactylServers(interaction: CommandInteraction): Promise<unknown> {
+    await interaction.deferReply();
+    const serverList = await http<ServerListReponse>(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      `${process.env.PTERODACTYL_API_URL!}/api/client`,
+      {
+        headers: {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          Authorization: `Bearer ${process.env.PTERODACTYL_API_TOKEN!}`,
+        },
+      },
+    );
+
+    const serverListOption = serverList.data
+      .filter((server) => !server.attributes.description.includes('no-watch'))
+      .map((server) => {
+        return {
+          label: server.attributes.name,
+          value: `${server.attributes.name},${server.attributes.uuid}`,
+        };
+      });
+    if (serverListOption.length > 0) {
+      const menu = new MessageSelectMenu()
+        .addOptions(serverListOption)
+        .setCustomId('pterodactyl-menu');
+
+      // send it
+      interaction.editReply({
+        content: 'Selectionne le serveur',
+        components: [new MessageActionRow().addComponents(menu)],
+      });
+    } else {
+      interaction.editReply("Aucun serveur n'a été trouvé");
+    }
+    return;
+  }
+
+  @SelectMenuComponent('pterodactyl-menu')
+  async handleServerChoice(
+    interaction: SelectMenuInteraction,
+  ): Promise<unknown> {
+    await interaction.deferUpdate();
+
+    // extract selected value by member
+    const choice = interaction.values[0].split(',');
+
+    const startButton = new MessageButton()
+      .setLabel('Start')
+      .setStyle('SUCCESS')
+      .setCustomId('start-server');
+    const stopButton = new MessageButton()
+      .setLabel('Stop')
+      .setStyle('DANGER')
+      .setCustomId('stop-server');
+    const restartButton = new MessageButton()
+      .setLabel('Restart')
+      .setStyle('PRIMARY')
+      .setCustomId('restart-server');
+    const urlButton = new MessageButton()
+      .setLabel('Url')
+      .setStyle('LINK')
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .setURL(`${process.env.PTERODACTYL_API_URL!}/server/${choice[1]}`);
+
+    const row = new MessageActionRow().addComponents(
+      startButton,
+      stopButton,
+      restartButton,
+      urlButton,
+    );
+
+    const embed = new MessageEmbed()
+      .addFields(
+        { name: 'Serveur', value: choice[0], inline: true },
+        { name: 'Id', value: choice[1], inline: true },
+      )
+      .setTitle('Serveur Pterodactyl');
+
+    await interaction.editReply({
+      content: 'Id : ' + interaction.values[0],
+      components: [row],
+      embeds: [embed],
+    });
+    return;
+  }
+
+  @ButtonComponent('start-server')
+  startServer(interaction: ButtonInteraction): void {
+    this.sendPowerState(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      getIdFromFields(interaction.message.embeds[0].fields!),
+      'start',
+    );
+    interaction.reply(`Le serveur a bien start`);
+  }
+  @ButtonComponent('stop-server')
+  stopServer(interaction: ButtonInteraction): void {
+    this.sendPowerState(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      getIdFromFields(interaction.message.embeds[0].fields!),
+      'stop',
+    );
+    interaction.reply(`Le serveur a bien stop`);
+  }
+  @ButtonComponent('restart-server')
+  restartServer(interaction: ButtonInteraction): void {
+    this.sendPowerState(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      getIdFromFields(interaction.message.embeds[0].fields!),
+      'restart',
+    );
+    interaction.reply(`Le serveur a bien restart`);
+  }
+
+  private async sendPowerState(
+    id: string,
+    signal: 'start' | 'stop' | 'restart' | 'kill',
+  ): Promise<unknown> {
+    return await http(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      `${process.env.PTERODACTYL_API_URL!}/api/client/servers/${id}/power`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ signal: `${signal}` }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization:
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            `Bearer ${process.env.PTERODACTYL_API_TOKEN!}`,
+        },
+      },
+    );
+  }
+}

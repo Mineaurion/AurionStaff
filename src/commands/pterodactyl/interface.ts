@@ -1,0 +1,40 @@
+export interface Attributes {
+  server_owner: boolean;
+  identifier: string;
+  internal_id: number;
+  uuid: string;
+  name: string;
+  node: string;
+  description: string;
+  invocation: string;
+  docker_image: string;
+  egg_features: string[];
+  status: string;
+  is_suspended: boolean;
+  is_installing: boolean;
+  is_transferring: boolean;
+}
+
+export interface Data {
+  object: string;
+  attributes: Attributes;
+}
+
+export interface Pagination {
+  total: number;
+  count: number;
+  per_page: number;
+  current_page: number;
+  total_pages: number;
+  links: object;
+}
+
+export interface Meta {
+  pagination: Pagination;
+}
+
+export interface ServerListReponse {
+  object: 'list';
+  data: Data[];
+  meta: Meta;
+}
