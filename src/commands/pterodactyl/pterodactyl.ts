@@ -13,16 +13,21 @@ import { ServerListReponse } from './interface';
 
 @Discord()
 export abstract class Pterodactyl {
+  private pterodactyl: { url: string; token: string } = {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    url: process.env.PTERODACTYL_API_URL!,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    token: process.env.PTERODACTYL_API_TOKEN!,
+  };
+
   @Slash('pterodactyl', { description: 'roles menu' })
   async pterodactylServers(interaction: CommandInteraction): Promise<unknown> {
     await interaction.deferReply();
     const serverList = await http<ServerListReponse>(
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      `${process.env.PTERODACTYL_API_URL!}/api/client`,
+      `${this.pterodactyl.url}/api/client`,
       {
         headers: {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          Authorization: `Bearer ${process.env.PTERODACTYL_API_TOKEN!}`,
+          Authorization: `Bearer ${this.pterodactyl.token}`,
         },
       },
     );
@@ -48,6 +53,8 @@ export abstract class Pterodactyl {
     } else {
       interaction.editReply("Aucun serveur n'a été trouvé");
     }
+    // Après 1min on supprime le message.
+    setTimeout(() => interaction.deleteReply(), 60000);
     return;
   }
 
@@ -57,7 +64,6 @@ export abstract class Pterodactyl {
   ): Promise<unknown> {
     await interaction.deferUpdate();
 
-    // extract selected value by member
     const choice = interaction.values[0].split(',');
 
     const startButton = new MessageButton()
@@ -76,7 +82,7 @@ export abstract class Pterodactyl {
       .setLabel('Url')
       .setStyle('LINK')
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .setURL(`${process.env.PTERODACTYL_API_URL!}/server/${choice[1]}`);
+      .setURL(`${this.pterodactyl.url}/server/${choice[1]}`);
 
     const row = new MessageActionRow().addComponents(
       startButton,

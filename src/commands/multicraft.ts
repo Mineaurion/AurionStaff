@@ -8,11 +8,16 @@ import {
   MessageEmbed,
 } from 'discord.js';
 import { Discord, Slash, SelectMenuComponent, ButtonComponent } from 'discordx';
-import { getIdFromFields } from '../../helper.js';
+import { getIdFromFields } from '../helper.js';
 import MulticraftAPI from 'multicraft-api-node';
 
+/**
+ * Code duppliqué par rapport a pterodactyl mais l'utilisation est temporaire
+ * TODO: a refactoriser si l'utilisation de multicraft est prolonge
+ */
+
 @Discord()
-export abstract class Multicraft {
+export class Multicraft {
   private api: MulticraftAPI;
 
   constructor() {
@@ -51,6 +56,8 @@ export abstract class Multicraft {
     } else {
       interaction.editReply("Aucun serveur n'a été trouvé");
     }
+    // Après 1min on supprime le message.
+    setTimeout(() => interaction.deleteReply(), 60000);
     return;
   }
 

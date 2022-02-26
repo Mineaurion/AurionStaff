@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 import 'dotenv/config';
 import { Intents, Interaction, Message } from 'discord.js';
-import { Client } from 'discordx';
+import { container } from 'tsyringe';
+import { Client, DIService } from 'discordx';
 import { dirname, importx } from '@discordx/importer';
 
 export const client = new Client({
@@ -63,6 +64,7 @@ const run = async (): Promise<void> => {
   if (!token) {
     throw Error('Could not find BOT_TOKEN in your environment');
   }
+  DIService.container = container;
   await client.login(token); // provide your bot token
 
   // ************* rest api section: start **********
