@@ -1,11 +1,14 @@
 import {
   AutocompleteInteraction,
   CommandInteraction,
+  MessageActionRow,
+  MessageButton,
   MessageEmbed,
 } from 'discord.js';
 import { Discord, Slash, SlashGroup, SlashOption } from 'discordx';
 import { injectable } from 'tsyringe';
 import { ChuckService } from './chuckService.js';
+import pkg from 'jsonwebtoken';
 
 @Discord()
 @injectable()
@@ -39,18 +42,52 @@ export class Chuck {
       }
     } else {
       await interaction.deferReply();
+      const playerDetail = await this.chuckService.getPlayerDetail(uuid);
       const embed = new MessageEmbed()
         .setColor('GREEN')
-        .addField('UUID', '00a4f918-c41f-4e9f-a0c6-10e6e68cac18')
-        .addField('🕰️ Connexion', '\u200B')
-        .addField('Première', '(bat) (18/10/2015 15:25).', true)
-        .addField('Dernière', 'infinity1 (10/12/2021 22:27).', true)
-        .setThumbnail('https://cravatar.eu/avatar/Yann151924/50.png');
+        .addFields([
+          {
+            name: 'UUID',
+            value: uuid,
+          },
+          {
+            name: 'Sanctions :',
+            value: 'Ban : 2  Mutes: 0\nKicks: 0  Warns: 0',
+          },
+          {
+            name: 'Première connexion',
+            value: `${playerDetail.firstLogin.server} le ${new Date(
+              playerDetail.firstLogin.date_login,
+            ).toLocaleDateString()}`,
+            inline: true,
+          },
+          {
+            name: 'Dernière connexion',
+            value: `${playerDetail.lastLogout.server} le ${new Date(
+              playerDetail.lastLogout.date_logout,
+            ).toLocaleDateString()}`,
+            inline: true,
+          },
+        ])
+        .setThumbnail(`https://cravatar.eu/avatar/${uuid}/50.png`);
+      const { sign } = pkg;
+      const jwt = sign(
+        {
+          user: interaction.user.id,
+        },
+        'secret',
+        {
+          expiresIn: '15m',
+        },
+      );
+      const profil = new MessageButton()
+        .setLabel('Full Profil')
+        .setStyle('LINK')
+        .setURL(`http://localhost:300/chuck/${uuid}?token=${jwt}`);
 
-      const content = 'Default';
       interaction.editReply({
-        content,
         embeds: [embed],
+        components: [new MessageActionRow().addComponents(profil)],
       });
     }
     return;

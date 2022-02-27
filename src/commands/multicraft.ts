@@ -8,7 +8,7 @@ import {
   MessageEmbed,
 } from 'discord.js';
 import { Discord, Slash, SelectMenuComponent, ButtonComponent } from 'discordx';
-import { getIdFromFields } from '../helper.js';
+import { searchFieldValueFromFields } from '../helper.js';
 import MulticraftAPI from 'multicraft-api-node';
 
 /**
@@ -117,8 +117,11 @@ export class Multicraft {
   @ButtonComponent('start-multicraft-server')
   async startServer(interaction: ButtonInteraction): Promise<void> {
     await this.api.startServer({
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      id: getIdFromFields(interaction.message.embeds[0].fields!),
+      id: searchFieldValueFromFields(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        interaction.message.embeds[0].fields!,
+        'Id',
+      ) as string,
     });
 
     interaction.reply(`Le serveur a bien start`);
@@ -126,16 +129,22 @@ export class Multicraft {
   @ButtonComponent('stop-multicraft-server')
   async stopServer(interaction: ButtonInteraction): Promise<void> {
     await this.api.stopServer({
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      id: getIdFromFields(interaction.message.embeds[0].fields!),
+      id: searchFieldValueFromFields(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        interaction.message.embeds[0].fields!,
+        'Id',
+      ) as string,
     });
     interaction.reply(`Le serveur a bien stop`);
   }
   @ButtonComponent('restart-multicraft-server')
   async restartServer(interaction: ButtonInteraction): Promise<void> {
     await this.api.restartServer({
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      id: getIdFromFields(interaction.message.embeds[0].fields!),
+      id: searchFieldValueFromFields(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        interaction.message.embeds[0].fields!,
+        'Id',
+      ) as string,
     });
     interaction.reply(`Le serveur a bien restart`);
   }

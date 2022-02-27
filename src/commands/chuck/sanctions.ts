@@ -4,7 +4,7 @@ import {
   Formatters,
 } from 'discord.js';
 import { Discord, Slash, SlashGroup, SlashOption } from 'discordx';
-import AsciiTable from 'ascii-table';
+import { AsciiTable3 } from 'ascii-table3';
 import { ChuckService } from './chuckService.js';
 import { injectable } from 'tsyringe';
 
@@ -54,7 +54,7 @@ export class Sanctions {
       await interaction.deferReply();
       const sanctions = await this.chuckService.getPlayerBan(uuid);
 
-      const message = new AsciiTable();
+      const message = new AsciiTable3();
       message.setHeading(
         'Raison',
         'Staff',

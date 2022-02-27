@@ -4,6 +4,7 @@ import { Intents, Interaction, Message } from 'discord.js';
 import { container } from 'tsyringe';
 import { Client, DIService } from 'discordx';
 import { dirname, importx } from '@discordx/importer';
+import { Koa } from '@discordx/koa';
 
 export const client = new Client({
   simpleCommand: {
@@ -57,7 +58,9 @@ const run = async (): Promise<void> => {
   // with cjs
   // await importx(__dirname + "/{events,commands}/**/*.{ts,js}");
   // with ems
-  await importx(dirname(import.meta.url) + '/{events,commands}/**/*.{ts,js}');
+  await importx(
+    dirname(import.meta.url) + '/{events,commands,api}/**/*.{ts,js}',
+  );
 
   // let's start the bot
   const token = process.env.BOT_TOKEN;
@@ -70,17 +73,17 @@ const run = async (): Promise<void> => {
   // ************* rest api section: start **********
 
   // api: prepare server
-  // const server = new Koa();
+  const server = new Koa();
 
   // api: need to build the api server first
-  // await server.build();
+  await server.build();
 
   // api: let's start the server now
-  // const port = process.env.PORT ?? 3000;
-  // server.listen(port, () => {
-  //   console.log(`discord api server started on ${port}`);
-  //   console.log(`visit localhost:${port}/guilds`);
-  // });
+  const port = process.env.PORT ?? 3000;
+  server.listen(port, () => {
+    console.log(`discord api server started on ${port}`);
+    console.log(`visit localhost:${port}/guilds`);
+  });
 
   // ************* rest api section: end **********
 };

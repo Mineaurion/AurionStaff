@@ -1,0 +1,30 @@
+<html>
+  <body>
+    <table>
+      <thead>
+        <tr>
+          <td>Raison</td>
+          <td>Staff</td>
+          <td>Date</td>
+          <td>Etat</td>
+          <td>Date Unban</td>
+          <td>UnBan Staff</td>
+          <td>Raison de l'unban</td>
+        </tr>
+      </thead>
+      <tbody>
+        {{#bans}}
+        <tr>
+          <td>{{ reason }}</td>
+          <td>{{ performer_nickname }}</td>
+          <td>{{ date_begin }}</td>
+          <td>{{ active }}</td>
+          <td>{{ undoer_date }}</td>
+          <td>{{ undoer_nickname }}</td>
+          <td>{{ undoer_reason }}</td>
+        </tr>
+        {{/bans}}
+      </tbody>
+    </table>
+  </body>
+</html>

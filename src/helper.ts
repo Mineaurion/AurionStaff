@@ -17,9 +17,10 @@ export const http = async <T>(
   return JSON.parse('{}');
 };
 
-export const getIdFromFields = (
+export const searchFieldValueFromFields = (
   fields: EmbedField[] | APIEmbedField[],
-): string => {
+  searchField: string,
+): string | undefined => {
   // On assume que l'id existe toujours du coup on cast en string
-  return fields.find((field) => field.name === 'Id')?.value as string;
+  return fields.find((field) => field.name === searchField)?.value;
 };

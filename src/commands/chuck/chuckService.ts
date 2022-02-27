@@ -9,6 +9,7 @@ import {
   Kick,
   Mute,
   Warn,
+  Detail,
 } from './model';
 
 @singleton()
@@ -29,8 +30,16 @@ export class ChuckService {
     });
   }
 
+  public async getPlayer(uuid: string): Promise<Player> {
+    return http<Player>(`${this.url}/player/${uuid}`);
+  }
+
+  public async getPlayerDetail(uuid: string): Promise<Detail> {
+    return http<Detail>(`${this.url}/player/${uuid}/detail`);
+  }
+
   public async getPlayerBan(uuid: string): Promise<Ban[]> {
-    return await this.getPlayerSanctions(uuid, 'ban');
+    return this.getPlayerSanctions(uuid, 'ban');
   }
 
   public async getPlayerKick(uuid: string): Promise<Kick[]> {

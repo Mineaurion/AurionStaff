@@ -8,7 +8,7 @@ import {
   MessageEmbed,
 } from 'discord.js';
 import { Discord, Slash, SelectMenuComponent, ButtonComponent } from 'discordx';
-import { getIdFromFields, http } from '../../helper.js';
+import { searchFieldValueFromFields, http } from '../../helper.js';
 import { ServerListReponse } from './interface';
 
 @Discord()
@@ -110,7 +110,7 @@ export abstract class Pterodactyl {
   startServer(interaction: ButtonInteraction): void {
     this.sendPowerState(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      getIdFromFields(interaction.message.embeds[0].fields!),
+      searchFieldValueFromFields(interaction.message.embeds[0].fields!, 'Id')!,
       'start',
     );
     interaction.reply(`Le serveur a bien start`);
@@ -119,7 +119,7 @@ export abstract class Pterodactyl {
   stopServer(interaction: ButtonInteraction): void {
     this.sendPowerState(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      getIdFromFields(interaction.message.embeds[0].fields!),
+      searchFieldValueFromFields(interaction.message.embeds[0].fields!, 'Id')!,
       'stop',
     );
     interaction.reply(`Le serveur a bien stop`);
@@ -128,7 +128,7 @@ export abstract class Pterodactyl {
   restartServer(interaction: ButtonInteraction): void {
     this.sendPowerState(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      getIdFromFields(interaction.message.embeds[0].fields!),
+      searchFieldValueFromFields(interaction.message.embeds[0].fields!, 'Id')!,
       'restart',
     );
     interaction.reply(`Le serveur a bien restart`);

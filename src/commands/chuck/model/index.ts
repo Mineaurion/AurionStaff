@@ -53,6 +53,11 @@ export interface Connection {
   server: string;
 }
 
+export interface Detail {
+  firstLogin: Connection;
+  lastLogout: Connection;
+}
+
 export type Sanctions = Ban[] | Mute[] | Kick[] | Warn[];
 export type TypeSanction = 'ban' | 'kick' | 'mute' | 'warn';
 
