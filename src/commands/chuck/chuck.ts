@@ -43,6 +43,7 @@ export class Chuck {
     } else {
       await interaction.deferReply();
       const playerDetail = await this.chuckService.getPlayerDetail(uuid);
+      const nickname = 'test';
       const embed = new MessageEmbed()
         .setColor('GREEN')
         .addFields([
@@ -83,7 +84,9 @@ export class Chuck {
       const profil = new MessageButton()
         .setLabel('Full Profil')
         .setStyle('LINK')
-        .setURL(`http://localhost:300/chuck/${uuid}?token=${jwt}`);
+        .setURL(
+          `http://localhost:3000/chuck/${uuid}?nickname=${nickname}&token=${jwt}`,
+        );
 
       interaction.editReply({
         embeds: [embed],

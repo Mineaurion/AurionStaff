@@ -1,5 +1,59 @@
 <html>
+  <head>
+    <style>
+      body {
+        background: url('https://i.imgur.com/cECWGnE.png');
+        background-size: auto;
+        color: white;
+        font-family: "Open Sans", sans-serif;
+        font-weight: 300;
+        padding: 0 30px 0 30px;
+      }
+      /* Table design */
+      table>thead>tr>th,
+      table>tbody>tr>th,
+      table>thead>tr>td,
+      table>tbody>tr>td { border-top:0px; }
+      table{
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+        border-spacing: 0;
+        border-collapse: collapse;
+        border-radius: 2px;
+        background-color: transparent;
+        -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.12), 0 1px 6px 0 rgba(0,0,0,.24);
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.12), 0 1px 6px 0 rgba(0,0,0,.24);
+      }
+      table tr:last-child td:first-child {border-bottom-left-radius: 2px;}
+      table tr:first-child td:first-child{border-top-left-radius: 2px;}
+      table tr:last-child td:last-child {border-bottom-right-radius: 2px;}
+      table tr:first-child td:last-child{border-top-right-radius: 2px;}
+      table thead {background-color: rgba(75,154,215,.24);}
+      tbody>tr:nth-child(odd){background-color: rgba(0,0,0,.24);}
+
+      .profil {
+        display: flex;
+        margin-bottom: 20px;
+      }
+      .profil img {
+        margin-right: 20px;
+      }
+      .profil-detail {
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
   <body>
+    <section class='profil'>
+      <img src="https://crafatar.com/avatars/{{ player.uuid }}?size=128"/>
+      <div class="profil-detail">
+        <p>{{ player.nickname }}</p>
+        <p>{{ player.uuid }}</p>
+      </div>
+    </section>
+    <h3>Bans : </h3>
     <table>
       <thead>
         <tr>
@@ -24,6 +78,75 @@
           <td>{{ undoer_reason }}</td>
         </tr>
         {{/bans}}
+      </tbody>
+    </table>
+    <h3>Mutes : </h3>
+    <table>
+      <thead>
+        <tr>
+          <td>Raison</td>
+          <td>Staff</td>
+          <td>Date</td>
+          <td>Etat</td>
+          <td>Date Unban</td>
+          <td>UnBan Staff</td>
+          <td>Raison de l'unban</td>
+        </tr>
+      </thead>
+      <tbody>
+        {{#mutes}}
+        <tr>
+          <td>{{ reason }}</td>
+          <td>{{ performer_nickname }}</td>
+          <td>{{ date_begin }}</td>
+          <td>{{ active }}</td>
+          <td>{{ undoer_date }}</td>
+          <td>{{ undoer_nickname }}</td>
+          <td>{{ undoer_reason }}</td>
+        </tr>
+        {{/mutes}}
+      </tbody>
+    </table>
+    <h3>Kicks : </h3>
+    <table>
+      <thead>
+        <tr>
+          <td>Raison</td>
+          <td>Staff</td>
+          <td>Date</td>
+          <td>Serveur</td>
+        </tr>
+      </thead>
+      <tbody>
+        {{#kicks}}
+        <tr>
+          <td>{{ reason }}</td>
+          <td>{{ performer_nickname }}</td>
+          <td>{{ date }}</td>
+          <td>{{ server }}</td>
+        </tr>
+        {{/kicks}}
+      </tbody>
+    </table>
+    <h3>Warns : </h3>
+    <table>
+      <thead>
+        <tr>
+          <td>Raison</td>
+          <td>Staff</td>
+          <td>Date</td>
+          <td>Serveur</td>
+        </tr>
+      </thead>
+      <tbody>
+        {{#warns}}
+        <tr>
+          <td>{{ reason }}</td>
+          <td>{{ performer_nickname }}</td>
+          <td>{{ date }}</td>
+          <td>{{ server }}</td>
+        </tr>
+        {{/warns}}
       </tbody>
     </table>
   </body>
