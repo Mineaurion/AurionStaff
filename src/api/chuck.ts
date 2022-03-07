@@ -21,7 +21,6 @@ export class Chuck {
   async chuck(context: Context): Promise<void> {
     const nickname: string = context.request.query.nickname as string;
     const uuid: string = context.params.uuid;
-    // const { compile } = pkg;
     const template = Mustache.render(
       readFileSync(
         dirname(import.meta.url) + '/templates/playerDetail.mustache',

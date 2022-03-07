@@ -5,13 +5,16 @@ import {
   MessageButton,
   MessageEmbed,
 } from 'discord.js';
-import { Discord, Slash, SlashGroup, SlashOption } from 'discordx';
+import { Discord, Permission, Slash, SlashGroup, SlashOption } from 'discordx';
 import { injectable } from 'tsyringe';
 import { ChuckService } from './chuckService.js';
-import pkg from 'jsonwebtoken';
+import jsonwebtoken from 'jsonwebtoken';
+import { staffPermission } from '../../helper.js';
 
 @Discord()
 @injectable()
+@Permission(false)
+@Permission(staffPermission)
 @SlashGroup({ name: 'chuck', description: 'Chuck Command' })
 @SlashGroup('chuck')
 export class Chuck {
@@ -71,8 +74,7 @@ export class Chuck {
           },
         ])
         .setThumbnail(`https://cravatar.eu/avatar/${uuid}/50.png`);
-      const { sign } = pkg;
-      const jwt = sign(
+      const jwt = jsonwebtoken.sign(
         {
           user: interaction.user.id,
         },

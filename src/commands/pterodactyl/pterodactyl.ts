@@ -6,12 +6,25 @@ import {
   MessageButton,
   ButtonInteraction,
   MessageEmbed,
+  ApplicationCommandPermissions,
 } from 'discord.js';
-import { Discord, Slash, SelectMenuComponent, ButtonComponent } from 'discordx';
-import { searchFieldValueFromFields, http } from '../../helper.js';
+import {
+  Discord,
+  Slash,
+  SelectMenuComponent,
+  ButtonComponent,
+  Permission,
+} from 'discordx';
+import {
+  searchFieldValueFromFields,
+  http,
+  staffPermission,
+} from '../../helper.js';
 import { ServerListReponse } from './interface';
 
 @Discord()
+@Permission(false)
+@Permission(staffPermission)
 export abstract class Pterodactyl {
   private pterodactyl: { url: string; token: string } = {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

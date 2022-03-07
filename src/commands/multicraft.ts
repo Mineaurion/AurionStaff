@@ -7,8 +7,14 @@ import {
   ButtonInteraction,
   MessageEmbed,
 } from 'discord.js';
-import { Discord, Slash, SelectMenuComponent, ButtonComponent } from 'discordx';
-import { searchFieldValueFromFields } from '../helper.js';
+import {
+  Discord,
+  Slash,
+  SelectMenuComponent,
+  ButtonComponent,
+  Permission,
+} from 'discordx';
+import { searchFieldValueFromFields, staffPermission } from '../helper.js';
 import MulticraftAPI from 'multicraft-api-node';
 
 /**
@@ -17,6 +23,8 @@ import MulticraftAPI from 'multicraft-api-node';
  */
 
 @Discord()
+@Permission(false)
+@Permission(staffPermission)
 export class Multicraft {
   private api: MulticraftAPI;
 

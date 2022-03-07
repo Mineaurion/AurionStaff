@@ -1,5 +1,6 @@
 import { APIEmbedField } from 'discord-api-types/v10';
-import { EmbedField } from 'discord.js';
+import { ApplicationCommandPermissions, EmbedField, Guild } from 'discord.js';
+import { ApplicationCommandMixin, SimpleCommandMessage } from 'discordx';
 import fetch, { RequestInfo, RequestInit } from 'node-fetch';
 
 export const http = async <T>(
@@ -23,4 +24,18 @@ export const searchFieldValueFromFields = (
 ): string | undefined => {
   // On assume que l'id existe toujours du coup on cast en string
   return fields.find((field) => field.name === searchField)?.value;
+};
+
+export const staffPermission = (
+  guild: Guild,
+  cmd: ApplicationCommandMixin | SimpleCommandMessage,
+): ApplicationCommandPermissions => {
+  const roleId = guild.roles.cache.find((role) => role.name === 'Staff')?.id;
+  if (roleId) {
+    return { id: roleId, permission: true, type: 'ROLE' };
+  } else {
+    throw new Error(
+      "Le role staf n'existe pas, le bot ne pourra pas fonctionner",
+    );
+  }
 };
