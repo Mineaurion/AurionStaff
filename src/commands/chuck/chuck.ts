@@ -25,6 +25,7 @@ export class Chuck {
     @SlashOption('uuid', {
       autocomplete: true,
       type: 'STRING',
+      description: 'UUID ou Pseudo du joueur'
     })
     uuid: string,
     interaction: CommandInteraction,
