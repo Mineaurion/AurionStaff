@@ -54,8 +54,29 @@ export interface Connection {
 }
 
 export interface Detail {
-  firstLogin: Connection;
-  lastLogout: Connection;
+  firstLogin: ConnectionDate;
+  lastLogout: ConnectionDate;
+  player: {
+    uuid: string;
+    nickname: string;
+  };
+  sanctions: {
+    stats: {
+      bans: number;
+      mutes: number;
+      kicks: number;
+      warns: number;
+    };
+    state: {
+      banned: boolean;
+      muted: boolean;
+    };
+  };
+}
+
+interface ConnectionDate {
+  date_login: string | null;
+  date_logout: string | null;
 }
 
 export type Sanctions = Ban[] | Mute[] | Kick[] | Warn[];

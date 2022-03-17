@@ -18,6 +18,9 @@ import { staffPermission } from '../../helper.js';
 @SlashGroup({ name: 'chuck', description: 'Chuck Command' })
 @SlashGroup('chuck')
 export class Chuck {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  private botDomain = process.env.BOT_DOMAIN!;
+
   constructor(private chuckService: ChuckService) {}
 
   @Slash('player')
@@ -25,7 +28,7 @@ export class Chuck {
     @SlashOption('uuid', {
       autocomplete: true,
       type: 'STRING',
-      description: 'UUID ou Pseudo du joueur'
+      description: 'UUID ou Pseudo du joueur',
     })
     uuid: string,
     interaction: CommandInteraction,
@@ -47,34 +50,52 @@ export class Chuck {
     } else {
       await interaction.deferReply();
       const playerDetail = await this.chuckService.getPlayerDetail(uuid);
-      const nickname = 'test';
       const embed = new MessageEmbed()
         .setColor('GREEN')
         .addFields([
+          {
+            name: 'Nickname',
+            value: playerDetail.player.nickname,
+          },
           {
             name: 'UUID',
             value: uuid,
           },
           {
+            name: 'Banni',
+            value: playerDetail.sanctions.state.banned ? '✅' : '❌',
+            inline: true,
+          },
+          {
+            name: 'Muté',
+            value: playerDetail.sanctions.state.muted ? '✅' : '❌',
+            inline: true,
+          },
+          {
             name: 'Sanctions :',
-            value: 'Ban : 2  Mutes: 0\nKicks: 0  Warns: 0',
+            // eslint-disable-next-line max-len
+            value: `Ban : ${playerDetail.sanctions.stats.bans}  Mutes: ${playerDetail.sanctions.stats.mutes}\nKicks: ${playerDetail.sanctions.stats.kicks}  Warns: ${playerDetail.sanctions.stats.warns}`,
           },
           {
             name: 'Première connexion',
-            value: `${playerDetail.firstLogin.server} le ${new Date(
-              playerDetail.firstLogin.date_login,
-            ).toLocaleDateString()}`,
+            value: playerDetail.firstLogin.date_login
+              ? `Le ${new Date(
+                  playerDetail.firstLogin.date_login,
+                ).toLocaleDateString()}`
+              : '-',
             inline: true,
           },
           {
             name: 'Dernière connexion',
-            value: `${playerDetail.lastLogout.server} le ${new Date(
-              playerDetail.lastLogout.date_logout,
-            ).toLocaleDateString()}`,
+            value: playerDetail.lastLogout.date_logout
+              ? `Le ${new Date(
+                  playerDetail.lastLogout.date_logout,
+                ).toLocaleDateString()}`
+              : '-',
             inline: true,
           },
         ])
-        .setThumbnail(`https://cravatar.eu/avatar/${uuid}/50.png`);
+        .setImage(`https://cravatar.eu/avatar/${uuid}/50.png`);
       const jwt = jsonwebtoken.sign(
         {
           user: interaction.user.id,
@@ -88,7 +109,7 @@ export class Chuck {
         .setLabel('Full Profil')
         .setStyle('LINK')
         .setURL(
-          `http://localhost:3000/chuck/${uuid}?nickname=${nickname}&token=${jwt}`,
+          `${this.botDomain}/chuck/${uuid}?nickname=${playerDetail.player.nickname}&token=${jwt}`,
         );
 
       interaction.editReply({
@@ -96,6 +117,8 @@ export class Chuck {
         components: [new MessageActionRow().addComponents(profil)],
       });
     }
+    // Après 1min on supprime le message.
+    setTimeout(() => interaction.deleteReply(), 60000);
     return;
   }
 }

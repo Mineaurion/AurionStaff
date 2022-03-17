@@ -6,7 +6,6 @@ import {
   MessageButton,
   ButtonInteraction,
   MessageEmbed,
-  ApplicationCommandPermissions,
 } from 'discord.js';
 import {
   Discord,
@@ -33,7 +32,9 @@ export abstract class Pterodactyl {
     token: process.env.PTERODACTYL_API_TOKEN!,
   };
 
-  @Slash('pterodactyl', { description: 'roles menu' })
+  @Slash('pterodactyl', {
+    description: 'Menu des serveurs pour Pterodactyl',
+  })
   async pterodactylServers(interaction: CommandInteraction): Promise<unknown> {
     await interaction.deferReply();
     const serverList = await http<ServerListReponse>(

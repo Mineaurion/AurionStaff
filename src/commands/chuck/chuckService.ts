@@ -14,8 +14,10 @@ import {
 
 @singleton()
 export class ChuckService {
-  private url = 'https://chuck.mineaurion.com';
-  private token = 'temptoken';
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  private url = process.env.CHUCK_DOMAIN!;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  private token = process.env.CHUCK_TOKEN!;
 
   private headers: HeadersInit = {
     'Content-Type': 'application/json',
@@ -31,11 +33,15 @@ export class ChuckService {
   }
 
   public async getPlayer(uuid: string): Promise<Player> {
-    return http<Player>(`${this.url}/player/${uuid}`);
+    return http<Player>(`${this.url}/player/${uuid}`, {
+      headers: this.headers,
+    });
   }
 
   public async getPlayerDetail(uuid: string): Promise<Detail> {
-    return http<Detail>(`${this.url}/player/${uuid}/detail`);
+    return http<Detail>(`${this.url}/player/${uuid}/detail`, {
+      headers: this.headers,
+    });
   }
 
   public async getPlayerBan(uuid: string): Promise<Ban[]> {
