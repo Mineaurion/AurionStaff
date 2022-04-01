@@ -55,9 +55,6 @@ client.on('messageCreate', (message: Message) => {
 });
 
 const run = async (): Promise<void> => {
-  // with cjs
-  // await importx(__dirname + "/{events,commands}/**/*.{ts,js}");
-  // with ems
   await importx(
     dirname(import.meta.url) + '/{events,commands,api}/**/*.{ts,js}',
   );
@@ -71,18 +68,12 @@ const run = async (): Promise<void> => {
   await client.login(token); // provide your bot token
 
   // ************* rest api section: start **********
-
-  // api: prepare server
   const server = new Koa();
-
-  // api: need to build the api server first
   await server.build();
 
-  // api: let's start the server now
   const port = process.env.PORT ?? 3000;
   server.listen(port, () => {
     console.log(`discord api server started on ${port}`);
-    console.log(`visit localhost:${port}/guilds`);
   });
 
   // ************* rest api section: end **********

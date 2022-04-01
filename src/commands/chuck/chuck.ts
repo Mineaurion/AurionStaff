@@ -13,7 +13,6 @@ import { ChuckService } from './chuckService.js';
 import jsonwebtoken from 'jsonwebtoken';
 import { staffPermission } from '../../helper.js';
 
-
 @Discord()
 @injectable()
 @Permission(false)
