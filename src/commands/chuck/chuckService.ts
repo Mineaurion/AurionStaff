@@ -10,6 +10,7 @@ import {
   Mute,
   Warn,
   Detail,
+  SearchConnection,
 } from './model';
 
 @singleton()
@@ -67,5 +68,32 @@ export class ChuckService {
     return http<T>(`${this.url}/player/${uuid}/${type}`, {
       headers: this.headers,
     });
+  }
+
+  public async getConnectionServer(): Promise<string[]> {
+    return http<string[]>(`${this.url}/connection/search/server`, {
+      headers: this.headers,
+    });
+  }
+
+  public async searchConnection(args: {
+    uuid?: string;
+    server?: string;
+    unique?: string;
+    dateBegin?: string;
+    dateEnd?: string;
+  }): Promise<SearchConnection> {
+    // On retire les valeurs falsy
+    args = Object.entries(args).reduce(
+      (a, [k, v]) => (v ? { ...a, [k]: v } : a),
+      {},
+    );
+    const queryParams = new URLSearchParams(args);
+    return http<SearchConnection>(
+      `${this.url}/connection/search?${queryParams.toString()}`,
+      {
+        headers: this.headers,
+      },
+    );
   }
 }

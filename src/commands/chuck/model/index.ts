@@ -86,3 +86,7 @@ export interface Player {
   uuid: string;
   nickname: string;
 }
+
+export interface SearchConnection {
+  [server: string]: Connection[];
+}
