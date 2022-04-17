@@ -114,13 +114,13 @@ export class Chuck {
           `${this.botDomain}/chuck/${uuid}?nickname=${playerDetail.player.nickname}&token=${jwt}`,
         );
 
-      interaction.editReply({
-        embeds: [embed],
-        components: [new MessageActionRow().addComponents(profil)],
-      });
+      interaction
+        .editReply({
+          embeds: [embed],
+          components: [new MessageActionRow().addComponents(profil)],
+        })
+        .then(() => setTimeout(() => interaction.deleteReply(), 60000));
     }
-    // Après 1min on supprime le message.
-    setTimeout(() => interaction.deleteReply(), 60000);
     return;
   }
 
