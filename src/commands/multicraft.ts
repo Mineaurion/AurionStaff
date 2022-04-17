@@ -22,6 +22,11 @@ import MulticraftAPI from 'multicraft-api-node';
  * TODO: a refactoriser si l'utilisation de multicraft est prolonge
  */
 
+enum ServerStatus {
+  offline = '🔴',
+  online = '🟢',
+}
+
 @Discord()
 @Permission(false)
 @Permission(staffPermission)
@@ -99,7 +104,7 @@ export class Multicraft {
           choice[1]
         }`,
       );
-
+    const serverStatus = await this.api.getServerStatus({ id: choice[1] });
     const row = new MessageActionRow().addComponents(
       startButton,
       stopButton,
@@ -111,6 +116,11 @@ export class Multicraft {
       .addFields(
         { name: 'Serveur', value: choice[0], inline: true },
         { name: 'Id', value: choice[1], inline: true },
+        {
+          name: 'Status',
+          value: ServerStatus[serverStatus.data.status],
+          inline: true,
+        },
       )
       .setTitle('Serveur Multicraft');
 

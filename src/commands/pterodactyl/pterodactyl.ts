@@ -19,8 +19,14 @@ import {
   http,
   staffPermission,
 } from '../../helper.js';
-import { ServerListReponse } from './interface';
+import { ServerListReponse, ServerResources } from './interface';
 
+enum ServerState {
+  offline = '🔴',
+  starting = '🟠',
+  stopping = '🟠',
+  running = '🟢',
+}
 @Discord()
 @Permission(false)
 @Permission(staffPermission)
@@ -98,6 +104,14 @@ export abstract class Pterodactyl {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .setURL(`${this.pterodactyl.url}/server/${choice[1]}`);
 
+    const serverResources = await http<ServerResources>(
+      `${this.pterodactyl.url}/api/client/servers/${choice[1]}/resources`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.pterodactyl.token}`,
+        },
+      },
+    );
     const row = new MessageActionRow().addComponents(
       startButton,
       stopButton,
@@ -109,6 +123,11 @@ export abstract class Pterodactyl {
       .addFields(
         { name: 'Serveur', value: choice[0], inline: true },
         { name: 'Id', value: choice[1], inline: true },
+        {
+          name: 'Status',
+          value: ServerState[serverResources.attributes.current_state],
+          inline: true,
+        },
       )
       .setTitle('Serveur Pterodactyl');
 
