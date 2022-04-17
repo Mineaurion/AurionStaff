@@ -1,0 +1,20 @@
+name: Release
+on:
+  workflow_run:
+    workflows: ["Node.js CI"]
+    branches: [main]
+    types: 
+      - completed
+ 
+jobs:
+  run-curl:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Restart Bot
+      env:
+        PTERODACTYL_API_TOKEN: ${{ secrets.PTERODACTYL_API_TOKEN }}
+        PTERODACTYL_API_URL: ${{ secrets.PTERODACTYL_API_URL }}
+      run: |
+         curl -X POST "${PTERODACTYL_API_URL}/api/client/servers/8ca22e5f/power" \
+                 -H "Accept: application/json" -H "Content-Type: application/json" \
+                 -H "Authorization: Bearer ${PTERODACTYL_API_TOKEN}" -d '{ "signal": "restart" }'
