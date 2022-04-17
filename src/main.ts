@@ -77,6 +77,10 @@ const run = async (): Promise<void> => {
   });
 
   // ************* rest api section: end **********
+
+  process.on('SIGINT', () => {
+    process.exit(0);
+  });
 };
 
 run();
