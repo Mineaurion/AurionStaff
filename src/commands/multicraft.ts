@@ -21,7 +21,6 @@ import MulticraftAPI from 'multicraft-api-node';
  * Code duppliqué par rapport a pterodactyl mais l'utilisation est temporaire
  * TODO: a refactoriser si l'utilisation de multicraft est prolonge
  */
-
 enum ServerStatus {
   offline = '🔴',
   online = '🟢',
@@ -61,7 +60,6 @@ export class Multicraft {
         .addOptions(serverListOption)
         .setCustomId('multicraft-menu');
 
-      // send it
       interaction.editReply({
         content: 'Selectionne le serveur',
         components: [new MessageActionRow().addComponents(menu)],
@@ -80,7 +78,7 @@ export class Multicraft {
   ): Promise<unknown> {
     await interaction.deferUpdate();
 
-    // extract selected value by member
+    // Extraction du choix
     const choice = interaction.values[0].split(',');
 
     const startButton = new MessageButton()
@@ -136,8 +134,7 @@ export class Multicraft {
   async startServer(interaction: ButtonInteraction): Promise<void> {
     await this.api.startServer({
       id: searchFieldValueFromFields(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        interaction.message.embeds[0].fields!,
+        interaction.message.embeds[0].fields,
         'Id',
       ) as string,
     });
@@ -148,8 +145,7 @@ export class Multicraft {
   async stopServer(interaction: ButtonInteraction): Promise<void> {
     await this.api.stopServer({
       id: searchFieldValueFromFields(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        interaction.message.embeds[0].fields!,
+        interaction.message.embeds[0].fields,
         'Id',
       ) as string,
     });
@@ -159,8 +155,7 @@ export class Multicraft {
   async restartServer(interaction: ButtonInteraction): Promise<void> {
     await this.api.restartServer({
       id: searchFieldValueFromFields(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        interaction.message.embeds[0].fields!,
+        interaction.message.embeds[0].fields,
         'Id',
       ) as string,
     });

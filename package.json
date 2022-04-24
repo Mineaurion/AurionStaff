@@ -26,14 +26,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Yann151924/aurionstaff.git"
+    "url": "git+https://github.com/Mineaurion/AurionStaff.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Yann151924/aurionstaff/issues"
+    "url": "https://github.com/Mineaurion/AurionStaff/issues"
   },
-  "homepage": "https://github.com/Yann151924/aurionstaff#readme",
+  "homepage": "https://github.com/Mineaurion/AurionStaff#readme",
   "dependencies": {
     "@discordjs/rest": "^0.3.0",
     "@discordx/importer": "^1.1.2",

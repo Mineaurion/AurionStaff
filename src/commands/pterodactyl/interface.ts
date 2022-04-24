@@ -1,4 +1,4 @@
-export interface Attributes {
+interface Attributes {
   server_owner: boolean;
   identifier: string;
   internal_id: number;
@@ -15,12 +15,12 @@ export interface Attributes {
   is_transferring: boolean;
 }
 
-export interface Data {
+interface Data {
   object: string;
   attributes: Attributes;
 }
 
-export interface Pagination {
+interface Pagination {
   total: number;
   count: number;
   per_page: number;
@@ -29,7 +29,7 @@ export interface Pagination {
   links: object;
 }
 
-export interface Meta {
+interface Meta {
   pagination: Pagination;
 }
 

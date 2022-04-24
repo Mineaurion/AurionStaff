@@ -65,7 +65,6 @@ export abstract class Pterodactyl {
         .addOptions(serverListOption)
         .setCustomId('pterodactyl-menu');
 
-      // send it
       interaction.editReply({
         content: 'Selectionne le serveur',
         components: [new MessageActionRow().addComponents(menu)],
@@ -101,7 +100,6 @@ export abstract class Pterodactyl {
     const urlButton = new MessageButton()
       .setLabel('Url')
       .setStyle('LINK')
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .setURL(`${this.pterodactyl.url}/server/${choice[1]}`);
 
     const serverResources = await http<ServerResources>(
@@ -142,8 +140,7 @@ export abstract class Pterodactyl {
   @ButtonComponent('start-server')
   startServer(interaction: ButtonInteraction): void {
     this.sendPowerState(
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      searchFieldValueFromFields(interaction.message.embeds[0].fields!, 'Id')!,
+      searchFieldValueFromFields(interaction.message.embeds[0].fields, 'Id'),
       'start',
     );
     interaction.reply(`Le serveur a bien start`);
@@ -151,8 +148,7 @@ export abstract class Pterodactyl {
   @ButtonComponent('stop-server')
   stopServer(interaction: ButtonInteraction): void {
     this.sendPowerState(
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      searchFieldValueFromFields(interaction.message.embeds[0].fields!, 'Id')!,
+      searchFieldValueFromFields(interaction.message.embeds[0].fields, 'Id'),
       'stop',
     );
     interaction.reply(`Le serveur a bien stop`);
@@ -160,17 +156,19 @@ export abstract class Pterodactyl {
   @ButtonComponent('restart-server')
   restartServer(interaction: ButtonInteraction): void {
     this.sendPowerState(
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      searchFieldValueFromFields(interaction.message.embeds[0].fields!, 'Id')!,
+      searchFieldValueFromFields(interaction.message.embeds[0].fields, 'Id'),
       'restart',
     );
     interaction.reply(`Le serveur a bien restart`);
   }
 
   private async sendPowerState(
-    id: string,
+    id: string | undefined,
     signal: 'start' | 'stop' | 'restart' | 'kill',
   ): Promise<unknown> {
+    if (!id) {
+      throw new Error('Id est undefined, merci de preciser un id valide');
+    }
     return await http(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       `${process.env.PTERODACTYL_API_URL!}/api/client/servers/${id}/power`,
