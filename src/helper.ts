@@ -63,7 +63,7 @@ export const staffPermission = (
 
 // La clef est le nom de la commande et le tableau contient les noms des roles qui ont accès à la commande
 const permissionConfig: Record<string, string[]> = {
-  multicraft: ['Rouges', 'Admin'],
-  pterodactyl: ['Rouges', 'Admin'],
+  multicraft: ['Rouges', 'Admin', 'aurionstaff-reboot-serveur'],
+  pterodactyl: ['Rouges', 'Admin', 'aurionstaff-reboot-serveur'],
   chuck: ['Staff'],
 };
