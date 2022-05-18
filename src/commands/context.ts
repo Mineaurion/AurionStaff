@@ -2,7 +2,7 @@ import { ContextMenuInteraction } from 'discord.js';
 import { Discord, ContextMenu } from 'discordx';
 
 @Discord()
-export abstract class ContextTest {
+export class ContextTest {
   @ContextMenu('MESSAGE', 'message context')
   messageHandler(interaction: ContextMenuInteraction): void {
     interaction.reply('I am user context handler');

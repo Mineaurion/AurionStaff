@@ -1,5 +1,5 @@
 import {
-  ApplicationCommandOptionChoice,
+  ApplicationCommandOptionChoiceData,
   AutocompleteInteraction,
   CommandInteraction,
   MessageActionRow,
@@ -157,7 +157,7 @@ export class Chuck {
     interaction: CommandInteraction,
   ): Promise<unknown> {
     if (interaction.isAutocomplete()) {
-      let interactionRespond: ApplicationCommandOptionChoice[] = [];
+      let interactionRespond: ApplicationCommandOptionChoiceData[] = [];
       const autoInteraction = interaction as AutocompleteInteraction;
       const focusedOption = autoInteraction.options.getFocused(true);
       if (focusedOption.name === 'server') {
@@ -177,6 +177,7 @@ export class Chuck {
           };
         });
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       autoInteraction.respond(interactionRespond);
     } else {
       await interaction.deferReply();

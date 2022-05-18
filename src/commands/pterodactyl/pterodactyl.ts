@@ -30,7 +30,7 @@ enum ServerState {
 @Discord()
 @Permission(false)
 @Permission(staffPermission)
-export abstract class Pterodactyl {
+export class Pterodactyl {
   private pterodactyl: { url: string; token: string } = {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     url: process.env.PTERODACTYL_API_URL!,
