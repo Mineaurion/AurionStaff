@@ -6,6 +6,7 @@ import {
   MessageButton,
   ButtonInteraction,
   MessageEmbed,
+  CacheType,
 } from 'discord.js';
 import {
   Discord,
@@ -27,6 +28,14 @@ enum ServerState {
   stopping = '🟠',
   running = '🟢',
 }
+
+enum ServerSignal {
+  START = 'start',
+  STOP = 'stop',
+  RESTART = 'restart',
+  KILL = 'kill',
+}
+
 @Discord()
 @Permission(false)
 @Permission(staffPermission)
@@ -53,7 +62,7 @@ export class Pterodactyl {
     );
 
     const serverListOption = serverList.data
-      .filter((server) => !server.attributes.description.includes('no-watch'))
+      // .filter((server) => !server.attributes.description.includes('no-watch'))
       .map((server) => {
         return {
           label: server.attributes.name,
@@ -139,36 +148,37 @@ export class Pterodactyl {
 
   @ButtonComponent('start-server')
   startServer(interaction: ButtonInteraction): void {
-    this.sendPowerState(
-      searchFieldValueFromFields(interaction.message.embeds[0].fields, 'Id'),
-      'start',
-    );
-    interaction.reply(`Le serveur a bien start`);
+    this.sendPowerState(interaction, ServerSignal.START);
   }
   @ButtonComponent('stop-server')
   stopServer(interaction: ButtonInteraction): void {
-    this.sendPowerState(
-      searchFieldValueFromFields(interaction.message.embeds[0].fields, 'Id'),
-      'stop',
-    );
-    interaction.reply(`Le serveur a bien stop`);
+    this.sendPowerState(interaction, ServerSignal.STOP);
   }
   @ButtonComponent('restart-server')
   restartServer(interaction: ButtonInteraction): void {
-    this.sendPowerState(
-      searchFieldValueFromFields(interaction.message.embeds[0].fields, 'Id'),
-      'restart',
-    );
-    interaction.reply(`Le serveur a bien restart`);
+    this.sendPowerState(interaction, ServerSignal.RESTART);
   }
 
   private async sendPowerState(
-    id: string | undefined,
-    signal: 'start' | 'stop' | 'restart' | 'kill',
-  ): Promise<unknown> {
+    interaction: ButtonInteraction<CacheType>,
+    signal: `${ServerSignal}`,
+  ): Promise<void> {
+    const id = searchFieldValueFromFields(
+      interaction.message.embeds[0].fields,
+      'Id',
+    );
     if (!id) {
       throw new Error('Id est undefined, merci de preciser un id valide');
     }
+    const serverName = searchFieldValueFromFields(
+      interaction.message.embeds[0].fields,
+      'Serveur',
+    );
+    interaction.reply(
+      `Le signal \`${signal}\` a bien été envoyé au serveur \`${
+        serverName || id
+      }\` par ${interaction.user.username}.`,
+    );
     return await http(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       `${process.env.PTERODACTYL_API_URL!}/api/client/servers/${id}/power`,
