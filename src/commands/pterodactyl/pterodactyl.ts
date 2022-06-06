@@ -62,7 +62,7 @@ export class Pterodactyl {
     );
 
     const serverListOption = serverList.data
-      // .filter((server) => !server.attributes.description.includes('no-watch'))
+      .filter((server) => !server.attributes.description.includes('no-watch'))
       .map((server) => {
         return {
           label: server.attributes.name,
