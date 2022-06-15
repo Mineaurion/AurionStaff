@@ -5,6 +5,7 @@ import { container } from 'tsyringe';
 import { Client, DIService } from 'discordx';
 import { dirname, importx } from '@discordx/importer';
 import { Koa } from '@discordx/koa';
+import promHttpMetrics from '@sigfox/koa-prometheus-http-metrics';
 
 export const client = new Client({
   simpleCommand: {
@@ -71,6 +72,8 @@ const run = async (): Promise<void> => {
   // ************* rest api section: start **********
   const server = new Koa();
   await server.build();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  server.use(promHttpMetrics());
 
   const port = process.env.SERVER_PORT ?? 3000;
   server.listen(port, () => {
