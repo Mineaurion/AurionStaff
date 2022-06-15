@@ -64,14 +64,12 @@ jobs:
           wget -q -O externalIdJson.json "${PTERODACTYL_API_URL}/api/application/servers/external/${EXTERNAL_ID}"\
                   --header "Accept: application/json" --header "Content-Type: application/json" \
                   --header "Authorization: Bearer ${PTERODACTYL_APPLICATION_TOKEN}"
+          echo "::add-mask::`cat externalIdJson.json`"
           internId=`cat externalIdJson.json | jq -r '.attributes.id'`
           identifier=`cat externalIdJson.json | jq -r '.attributes.identifier'`
           environnment=`cat externalIdJson.json | jq -r '.attributes.container.environment'`
           startupCommand=`cat externalIdJson.json | jq -r '.attributes.container.startup_command'`
           egg=`cat externalIdJson.json | jq -r '.attributes.egg'`
-
-          echo "::add-mask::`cat externalIdJson.json`"
-
           data='{
               "startup": "'$startupCommand'",
               "environment": '$environnment',
