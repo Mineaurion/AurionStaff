@@ -1,4 +1,4 @@
-name: Docker
+name: Docker + Deploy
 
 on:
   push:
@@ -16,18 +16,14 @@ jobs:
     permissions:
       contents: read
       packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
       id-token: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
       # Workaround: https://github.com/docker/build-push-action/issues/461
       - name: Setup Docker buildx
         uses: docker/setup-buildx-action@79abd3f86f79a9d68a23c75a09a9a85889262adf
-
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
@@ -37,17 +33,12 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      # Build and push Docker image with Buildx (don't push on PR)
-      # https://github.com/docker/build-push-action
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
@@ -57,3 +48,44 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           target: prod
+
+  deploying:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Deploy Bot on Pterodactyl
+        env:
+          PTERODACTYL_API_TOKEN: ${{ secrets.PTERODACTYL_API_TOKEN }}
+          PTERODACTYL_API_URL: ${{ secrets.PTERODACTYL_API_URL }}
+          PTERODACTYL_APPLICATION_TOKEN: ${{ secrets.PTERODACTYL_APPLICATION_TOKEN }}
+          EXTERNAL_ID: aurionstaff
+        run: |
+          sudo apt-get install -y jq
+          wget -q -O externalIdJson.json "${PTERODACTYL_API_URL}/api/application/servers/external/${EXTERNAL_ID}"\
+                  --header "Accept: application/json" --header "Content-Type: application/json" \
+                  --header "Authorization: Bearer ${PTERODACTYL_APPLICATION_TOKEN}"
+          internId=`cat externalIdJson.json | jq -r '.attributes.id'`
+          identifier=`cat externalIdJson.json | jq -r '.attributes.identifier'`
+          environnment=`cat externalIdJson.json | jq -r '.attributes.container.environment'`
+          startupCommand=`cat externalIdJson.json | jq -r '.attributes.container.startup_command'`
+          egg=`cat externalIdJson.json | jq -r '.attributes.egg'`
+
+          echo "::add-mask::`cat externalIdJson.json`"
+
+          data='{
+              "startup": "'$startupCommand'",
+              "environment": '$environnment',
+              "egg": "'$egg'",
+              "image": "ghcr.io/mineaurion/aurionstaff:'${GITHUB_REF#refs/*/}'",
+              "skip_scripts": true
+          }'
+
+          curl --silent -X PATCH "${PTERODACTYL_API_URL}/api/application/servers/$internId/startup"\
+              -H "Accept: application/json" -H "Content-Type: application/json" \
+              -H "Authorization: Bearer ${PTERODACTYL_APPLICATION_TOKEN}"\
+              -d "${data}"
+
+          curl --silent -X POST "${PTERODACTYL_API_URL}/api/client/servers/$identifier/power" \
+              -H "Accept: application/json" -H "Content-Type: application/json" \
+              -H "Authorization: Bearer ${PTERODACTYL_API_TOKEN}"\
+              -d '{ "signal": "restart" }'
