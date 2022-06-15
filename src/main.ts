@@ -72,7 +72,7 @@ const run = async (): Promise<void> => {
   const server = new Koa();
   await server.build();
 
-  const port = process.env.PORT ?? 3000;
+  const port = process.env.SERVER_PORT ?? 3000;
   server.listen(port, () => {
     console.log(`discord api server started on ${port}`);
   });

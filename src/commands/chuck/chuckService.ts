@@ -1,6 +1,6 @@
 import { HeadersInit } from 'node-fetch';
 import { singleton } from 'tsyringe';
-import { http } from '../../helper.js';
+import { http } from '../../utils/helper.js';
 import {
   Player,
   Ban,

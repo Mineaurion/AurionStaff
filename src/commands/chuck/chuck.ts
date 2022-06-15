@@ -11,7 +11,7 @@ import { Discord, Permission, Slash, SlashGroup, SlashOption } from 'discordx';
 import { injectable } from 'tsyringe';
 import { ChuckService } from './chuckService.js';
 import jsonwebtoken from 'jsonwebtoken';
-import { staffPermission } from '../../helper.js';
+import { staffPermission } from '../../utils/helper.js';
 
 @Discord()
 @injectable()

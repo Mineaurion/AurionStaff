@@ -1,11 +1,11 @@
 name: Release
 on:
   workflow_run:
-    workflows: ["Node.js CI"]
+    workflows: ["Docker"]
     branches: [main]
-    types: 
+    types:
       - completed
- 
+
 jobs:
   run-curl:
     runs-on: ubuntu-latest

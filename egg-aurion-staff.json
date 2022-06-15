@@ -1,0 +1,92 @@
+{
+  "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+  "meta": {
+    "version": "PTDL_v2",
+    "update_url": null
+  },
+  "exported_at": "2022-06-15T15:23:50+02:00",
+  "name": "AurionStaff",
+  "author": "yann@mineaurion.com",
+  "description": "AurionStaff Egg\r\nThe startup command is unnecessary it will use the cmd defined in dockerfile",
+  "features": null,
+  "docker_images": {
+    "Latest Aurionstaff": "ghcr.io/mineaurion/aurionstaff:latest"
+  },
+  "file_denylist": [],
+  "startup": "npm run start:prod",
+  "config": {
+    "files": "{}",
+    "startup": "{\r\n    \"done\": \"Bot started\"\r\n}",
+    "logs": "{}",
+    "stop": "^C"
+  },
+  "scripts": {
+    "installation": {
+      "script": null,
+      "container": "alpine:3.4",
+      "entrypoint": "ash"
+    }
+  },
+  "variables": [
+    {
+      "name": "Pterodactyl Api Url",
+      "description": "Url de l'api de pterodactyl. Ex: http://panel.example.com",
+      "env_variable": "PTERODACTYL_API_URL",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|url",
+      "field_type": "text"
+    },
+    {
+      "name": "Pterodactyl Api Token",
+      "description": "Token user pour l'api pterodactyl",
+      "env_variable": "PTERODACTYL_API_TOKEN",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string",
+      "field_type": "text"
+    },
+    {
+      "name": "Token discord",
+      "description": "",
+      "env_variable": "BOT_TOKEN",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string",
+      "field_type": "text"
+    },
+    {
+      "name": "Domaine web du bot",
+      "description": "",
+      "env_variable": "BOT_DOMAIN",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|url",
+      "field_type": "text"
+    },
+    {
+      "name": "Chuck domaine",
+      "description": "Domaine de l'api chuck",
+      "env_variable": "CHUCK_DOMAIN",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|url",
+      "field_type": "text"
+    },
+    {
+      "name": "Chuck Token",
+      "description": "Token de l'api chuck",
+      "env_variable": "CHUCK_TOKEN",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string",
+      "field_type": "text"
+    }
+  ]
+}

@@ -41,3 +41,7 @@ For the development, you need to have prettier and eslint extension to have bett
 npm ci
 npm run start
 ```
+
+## Pterodactyl
+
+You can use this bot in pterodactyl, you need to install the file egg-aurion-staff.json in order to do that. And take inspiration on the github workflow in order to update the docker container.

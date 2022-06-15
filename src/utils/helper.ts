@@ -67,3 +67,18 @@ const permissionConfig: Record<string, string[]> = {
   pterodactyl: ['Rouges', 'Admin', 'aurionstaff-reboot-serveur'],
   chuck: ['Staff'],
 };
+
+/**
+ * @description Convertie une string en boolean.
+ *
+ * La convertion va faire la chose suivante :
+ *
+ * - Si 'true', 'on', or '1' alors true.
+ * - ignore les espaces et la casse
+ *
+ * '  tRue  ','ON', et '1   ' ou encore 'Oui' seront évaluer à true.
+ *
+ */
+export const strToBool = (s: string): boolean => {
+  return /^\s*(true|1|on|oui)\s*$/i.test(s);
+};
