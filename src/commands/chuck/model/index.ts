@@ -1,16 +1,10 @@
-export interface Ban {
-  id: number;
-  player: Player;
+export interface Player {
+  uuid: string;
+  nickname: string;
+}
+
+export interface Ban extends Mute {
   ip?: string;
-  reason: string;
-  server: string;
-  performer_nickname: string;
-  date_begin: string;
-  date_end: string;
-  undoer_nickname: string;
-  undoer_reason: string;
-  undoer_date: string;
-  active: boolean;
 }
 
 export interface Mute {
@@ -36,13 +30,10 @@ export interface Kick {
   server: string;
 }
 
-export interface Warn {
-  id: number;
-  player: Player;
-  reason: string;
-  performer_nickname: string;
-  date: string;
-  server: string;
+export type Warn = Kick;
+
+export interface SearchConnection {
+  [server: string]: Connection[];
 }
 
 export interface Connection {
@@ -80,13 +71,13 @@ interface ConnectionDate {
 }
 
 export type Sanctions = Ban[] | Mute[] | Kick[] | Warn[];
-export type TypeSanction = 'ban' | 'kick' | 'mute' | 'warn';
+type Sanction = Ban | Mute | Kick | Warn;
 
-export interface Player {
-  uuid: string;
-  nickname: string;
+enum TypeSanctionEnum {
+  Ban = 'ban',
+  Kick = 'kick',
+  Mute = 'mute',
+  Warn = 'warn',
 }
 
-export interface SearchConnection {
-  [server: string]: Connection[];
-}
+export type TypeSanction = `${TypeSanctionEnum}`;

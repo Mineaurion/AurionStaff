@@ -1,0 +1,23 @@
+<h3>Warns : </h3>
+<table>
+  <thead>
+    <tr>
+      {{#displayPlayer}}<td>Joueur</td>{{/displayPlayer}}
+      <td>Raison</td>
+      <td>Staff</td>
+      <td>Date</td>
+      <td>Serveur</td>
+    </tr>
+  </thead>
+  <tbody>
+    {{#warns}}
+    <tr>
+      {{#displayPlayer}}<td>{{ player.nickname }}</td>{{/displayPlayer}}
+      <td>{{ reason }}</td>
+      <td>{{ performer_nickname }}</td>
+      <td>{{#dateFormat}}{{ date }}{{/dateFormat}}</td>
+      <td>{{ server }}</td>
+    </tr>
+    {{/warns}}
+  </tbody>
+</table>

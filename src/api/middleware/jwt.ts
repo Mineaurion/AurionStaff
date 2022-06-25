@@ -7,12 +7,14 @@ export const jwtTemp = (
   next: Next,
 ): Promise<unknown> | undefined => {
   const jwt = context.request.query.token;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const jwtSecret = process.env.JWT_SECRET!;
   if (Array.isArray(jwt) || jwt === undefined) {
     context.body = 'unauthorized required';
     return;
   } else {
     try {
-      jsonwebtoken.verify(jwt, 'secret');
+      jsonwebtoken.verify(jwt, jwtSecret);
       return next();
     } catch (error) {
       context.body = 'unauthorized required';

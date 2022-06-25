@@ -22,8 +22,30 @@ import { staffPermission } from '../../utils/helper.js';
 export class Chuck {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   private botDomain = process.env.BOT_DOMAIN!;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  private jwtSecret = process.env.JWT_SECRET!;
 
   constructor(private chuckService: ChuckService) {}
+
+  @Slash('sanctions')
+  defaultCommand(interaction: CommandInteraction): void {
+    const jwt = this.geneateJwt(interaction.user.id);
+
+    interaction
+      .reply({
+        content: 'Page des sanctions',
+        ephemeral: true,
+        components: [
+          new MessageActionRow().addComponents(
+            new MessageButton()
+              .setLabel('Lien')
+              .setStyle('LINK')
+              .setURL(`${this.botDomain}/chuck/sanctions?token=${jwt}`),
+          ),
+        ],
+      })
+      .then(() => setTimeout(() => interaction.deleteReply(), 5 * 60000));
+  }
 
   @Slash('player')
   async player(
@@ -50,19 +72,12 @@ export class Chuck {
         );
       }
     } else {
-      await interaction.deferReply();
       const playerDetail = await this.chuckService.getPlayerDetail(uuid);
       const embed = new MessageEmbed()
         .setColor('GREEN')
         .addFields([
-          {
-            name: 'Nickname',
-            value: playerDetail.player.nickname,
-          },
-          {
-            name: 'UUID',
-            value: uuid,
-          },
+          { name: 'Nickname', value: playerDetail.player.nickname },
+          { name: 'UUID', value: uuid },
           {
             name: 'Banni',
             value: playerDetail.sanctions.state.banned ? '✅' : '❌',
@@ -98,25 +113,19 @@ export class Chuck {
           },
         ])
         .setImage(`https://cravatar.eu/avatar/${uuid}/50.png`);
-      const jwt = jsonwebtoken.sign(
-        {
-          user: interaction.user.id,
-        },
-        'secret',
-        {
-          expiresIn: '15m',
-        },
-      );
+      const jwt = this.geneateJwt(interaction.user.id);
       const profil = new MessageButton()
         .setLabel('Full Profil')
         .setStyle('LINK')
         .setURL(
-          `${this.botDomain}/chuck/${uuid}?nickname=${playerDetail.player.nickname}&token=${jwt}`,
+          // eslint-disable-next-line max-len
+          `${this.botDomain}/chuck/player/${uuid}?nickname=${playerDetail.player.nickname}&token=${jwt}`,
         );
 
       interaction
-        .editReply({
+        .reply({
           embeds: [embed],
+          ephemeral: true,
           components: [new MessageActionRow().addComponents(profil)],
         })
         .then(() => setTimeout(() => interaction.deleteReply(), 60000));
@@ -163,18 +172,12 @@ export class Chuck {
       if (focusedOption.name === 'server') {
         const servers = await this.chuckService.getConnectionServer();
         interactionRespond = servers.map((server) => {
-          return {
-            name: server,
-            value: server,
-          };
+          return { name: server, value: server };
         });
       } else if (focusedOption.name === 'uuid') {
         const search = await this.chuckService.searchPlayer(uuid as string);
         interactionRespond = search.map((player) => {
-          return {
-            name: player.nickname,
-            value: player.uuid,
-          };
+          return { name: player.nickname, value: player.uuid };
         });
       }
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -223,5 +226,9 @@ export class Chuck {
     // Après 5min on supprime le message.
     setTimeout(() => interaction.deleteReply(), 60000 * 5);
     return;
+  }
+
+  private geneateJwt(userId: string, expiresIn = '5m'): string {
+    return jsonwebtoken.sign({ user: userId }, this.jwtSecret, { expiresIn });
   }
 }

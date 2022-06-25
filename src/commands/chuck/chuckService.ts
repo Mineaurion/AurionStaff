@@ -96,4 +96,18 @@ export class ChuckService {
       },
     );
   }
+
+  public async getSanctions<T extends Sanctions>(
+    limit: number,
+    offset: number,
+    type: TypeSanction,
+  ): Promise<T> {
+    const queryParams = new URLSearchParams({
+      limit: limit.toString(),
+      offset: offset.toString(),
+    });
+    return http<T>(`${this.url}/${type}?${queryParams.toString()}`, {
+      headers: this.headers,
+    });
+  }
 }

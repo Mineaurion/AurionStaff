@@ -1,0 +1,29 @@
+<h3>Mutes : </h3>
+<table>
+  <thead>
+    <tr>
+      {{#displayPlayer}}<td>Joueur</td>{{/displayPlayer}}
+      <td>Raison</td>
+      <td>Staff</td>
+      <td>Date</td>
+      <td>Etat</td>
+      <td>Date Unban</td>
+      <td>UnBan Staff</td>
+      <td>Raison de l'unban</td>
+    </tr>
+  </thead>
+  <tbody>
+    {{#mutes}}
+    <tr>
+      {{#displayPlayer}}<td>{{ player.nickname }}</td>{{/displayPlayer}}
+      <td>{{ reason }}</td>
+      <td>{{ performer_nickname }}</td>
+      <td>{{#dateFormat}}{{ date_begin }}{{/dateFormat}}</td>
+      <td>{{#active}}V{{/active}}{{^active}}X{{/active}}</td>
+      <td>{{#dateFormat}}{{ undoer_date }}{{/dateFormat}}</td>
+      <td>{{ undoer_nickname }}</td>
+      <td>{{ undoer_reason }}</td>
+    </tr>
+    {{/mutes}}
+  </tbody>
+</table>
