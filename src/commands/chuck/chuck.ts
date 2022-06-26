@@ -2,10 +2,13 @@ import {
   ApplicationCommandOptionChoiceData,
   AutocompleteInteraction,
   CommandInteraction,
+  InteractionReplyOptions,
   MessageActionRow,
   MessageAttachment,
   MessageButton,
   MessageEmbed,
+  WebhookEditMessageOptions,
+  WebhookMessageOptions,
 } from 'discord.js';
 import { Discord, Permission, Slash, SlashGroup, SlashOption } from 'discordx';
 import { injectable } from 'tsyringe';
@@ -31,20 +34,18 @@ export class Chuck {
   defaultCommand(interaction: CommandInteraction): void {
     const jwt = this.geneateJwt(interaction.user.id);
 
-    interaction
-      .reply({
-        content: 'Page des sanctions',
-        ephemeral: true,
-        components: [
-          new MessageActionRow().addComponents(
-            new MessageButton()
-              .setLabel('Lien')
-              .setStyle('LINK')
-              .setURL(`${this.botDomain}/chuck/sanctions?token=${jwt}`),
-          ),
-        ],
-      })
-      .then(() => setTimeout(() => interaction.deleteReply(), 5 * 60000));
+    interaction.reply({
+      content: 'Page des sanctions',
+      ephemeral: true,
+      components: [
+        new MessageActionRow().addComponents(
+          new MessageButton()
+            .setLabel('Lien')
+            .setStyle('LINK')
+            .setURL(`${this.botDomain}/chuck/sanctions?token=${jwt}`),
+        ),
+      ],
+    });
   }
 
   @Slash('player')
@@ -56,7 +57,7 @@ export class Chuck {
     })
     uuid: string,
     interaction: CommandInteraction,
-  ): Promise<unknown> {
+  ): Promise<void> {
     if (interaction.isAutocomplete()) {
       const autoInteraction = interaction as AutocompleteInteraction;
       const focusedOption = autoInteraction.options.getFocused(true);
@@ -72,65 +73,73 @@ export class Chuck {
         );
       }
     } else {
-      const playerDetail = await this.chuckService.getPlayerDetail(uuid);
-      const embed = new MessageEmbed()
-        .setColor('GREEN')
-        .addFields([
-          { name: 'Nickname', value: playerDetail.player.nickname },
-          { name: 'UUID', value: uuid },
-          {
-            name: 'Banni',
-            value: playerDetail.sanctions.state.banned ? '✅' : '❌',
-            inline: true,
-          },
-          {
-            name: 'Muté',
-            value: playerDetail.sanctions.state.muted ? '✅' : '❌',
-            inline: true,
-          },
-          {
-            name: 'Sanctions :',
+      let messagePayload: InteractionReplyOptions = {};
+      try {
+        const playerDetail = await this.chuckService.getPlayerDetail(uuid);
+        const embed = new MessageEmbed()
+          .setColor('GREEN')
+          .addFields([
+            { name: 'Nickname', value: playerDetail.player.nickname },
+            { name: 'UUID', value: uuid },
+            {
+              name: 'Banni',
+              value: playerDetail.sanctions.state.banned ? '✅' : '❌',
+              inline: true,
+            },
+            {
+              name: 'Muté',
+              value: playerDetail.sanctions.state.muted ? '✅' : '❌',
+              inline: true,
+            },
+            {
+              name: 'Sanctions :',
+              // eslint-disable-next-line max-len
+              value: `Ban : ${playerDetail.sanctions.stats.bans}  Mutes: ${playerDetail.sanctions.stats.mutes}\nKicks: ${playerDetail.sanctions.stats.kicks}  Warns: ${playerDetail.sanctions.stats.warns}`,
+            },
+            {
+              name: 'Première connexion',
+              value: playerDetail.firstLogin.date_login
+                ? `Le ${new Date(
+                    playerDetail.firstLogin.date_login,
+                  ).toLocaleDateString()}`
+                : '-',
+              inline: true,
+            },
+            {
+              name: 'Dernière connexion',
+              value: playerDetail.lastLogout.date_logout
+                ? `Le ${new Date(
+                    playerDetail.lastLogout.date_logout,
+                  ).toLocaleDateString()}`
+                : '-',
+              inline: true,
+            },
+          ])
+          .setImage(`https://cravatar.eu/avatar/${uuid}/50.png`);
+        const jwt = this.geneateJwt(interaction.user.id);
+        const profil = new MessageButton()
+          .setLabel('Full Profil')
+          .setStyle('LINK')
+          .setURL(
             // eslint-disable-next-line max-len
-            value: `Ban : ${playerDetail.sanctions.stats.bans}  Mutes: ${playerDetail.sanctions.stats.mutes}\nKicks: ${playerDetail.sanctions.stats.kicks}  Warns: ${playerDetail.sanctions.stats.warns}`,
-          },
-          {
-            name: 'Première connexion',
-            value: playerDetail.firstLogin.date_login
-              ? `Le ${new Date(
-                  playerDetail.firstLogin.date_login,
-                ).toLocaleDateString()}`
-              : '-',
-            inline: true,
-          },
-          {
-            name: 'Dernière connexion',
-            value: playerDetail.lastLogout.date_logout
-              ? `Le ${new Date(
-                  playerDetail.lastLogout.date_logout,
-                ).toLocaleDateString()}`
-              : '-',
-            inline: true,
-          },
-        ])
-        .setImage(`https://cravatar.eu/avatar/${uuid}/50.png`);
-      const jwt = this.geneateJwt(interaction.user.id);
-      const profil = new MessageButton()
-        .setLabel('Full Profil')
-        .setStyle('LINK')
-        .setURL(
-          // eslint-disable-next-line max-len
-          `${this.botDomain}/chuck/player/${uuid}?nickname=${playerDetail.player.nickname}&token=${jwt}`,
-        );
-
-      interaction
-        .reply({
+            `${this.botDomain}/chuck/player/${uuid}?nickname=${playerDetail.player.nickname}&token=${jwt}`,
+          );
+        messagePayload = {
           embeds: [embed],
           ephemeral: true,
           components: [new MessageActionRow().addComponents(profil)],
-        })
-        .then(() => setTimeout(() => interaction.deleteReply(), 60000));
+        };
+      } catch (error) {
+        messagePayload = {
+          content: `Erreur, l'api renvoie le message suivant : ${
+            error as string
+          }`,
+          ephemeral: true,
+        };
+      }
+
+      interaction.reply(messagePayload);
     }
-    return;
   }
 
   @Slash('search')
