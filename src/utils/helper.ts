@@ -9,6 +9,7 @@ export const http = async <T>(
 ): Promise<T> => {
   const response = await fetch(request, init);
   if (!response.ok) {
+    console.error('Erreur fetching', request);
     throw response.statusText;
   }
   const body = await response.text();

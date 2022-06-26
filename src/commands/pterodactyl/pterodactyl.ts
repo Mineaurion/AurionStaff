@@ -7,6 +7,7 @@ import {
   ButtonInteraction,
   MessageEmbed,
   CacheType,
+  WebhookEditMessageOptions,
 } from 'discord.js';
 import {
   Discord,
@@ -61,8 +62,13 @@ export class Pterodactyl {
       },
     );
 
+    // TODO: la limit du select est de 25. Mettre en place une pagination si necessaire
     const serverListOption = serverList.data
-      .filter((server) => !server.attributes.description.includes('no-watch'))
+      .filter(
+        (server) =>
+          !server.attributes.description.includes('no-watch') &&
+          server.attributes.status !== 'suspended',
+      )
       .map((server) => {
         return {
           label: server.attributes.name,
@@ -87,63 +93,65 @@ export class Pterodactyl {
   }
 
   @SelectMenuComponent('pterodactyl-menu')
-  async handleServerChoice(
-    interaction: SelectMenuInteraction,
-  ): Promise<unknown> {
+  async handleServerChoice(interaction: SelectMenuInteraction): Promise<void> {
     await interaction.deferUpdate();
 
     const choice = interaction.values[0].split(',');
-
-    const startButton = new MessageButton()
-      .setLabel('Start')
-      .setStyle('SUCCESS')
-      .setCustomId('start-server');
-    const stopButton = new MessageButton()
-      .setLabel('Stop')
-      .setStyle('DANGER')
-      .setCustomId('stop-server');
-    const restartButton = new MessageButton()
-      .setLabel('Restart')
-      .setStyle('PRIMARY')
-      .setCustomId('restart-server');
-    const urlButton = new MessageButton()
-      .setLabel('Url')
-      .setStyle('LINK')
-      .setURL(`${this.pterodactyl.url}/server/${choice[1]}`);
-
-    const serverResources = await http<ServerResources>(
-      `${this.pterodactyl.url}/api/client/servers/${choice[1]}/resources`,
-      {
-        headers: {
-          Authorization: `Bearer ${this.pterodactyl.token}`,
-        },
-      },
-    );
-    const row = new MessageActionRow().addComponents(
-      startButton,
-      stopButton,
-      restartButton,
-      urlButton,
-    );
-
-    const embed = new MessageEmbed()
-      .addFields(
-        { name: 'Serveur', value: choice[0], inline: true },
-        { name: 'Id', value: choice[1], inline: true },
+    let messagePayload: WebhookEditMessageOptions = {};
+    try {
+      const serverResources = await http<ServerResources>(
+        `${this.pterodactyl.url}/api/client/servers/${choice[1]}/resources`,
         {
-          name: 'Status',
-          value: ServerState[serverResources.attributes.current_state],
-          inline: true,
+          headers: {
+            Authorization: `Bearer ${this.pterodactyl.token}`,
+          },
         },
-      )
-      .setTitle('Serveur Pterodactyl');
+      );
 
-    await interaction.editReply({
-      content: 'Id : ' + interaction.values[0],
-      components: [row],
-      embeds: [embed],
-    });
-    return;
+      const row = new MessageActionRow().addComponents(
+        new MessageButton()
+          .setLabel('Start')
+          .setStyle('SUCCESS')
+          .setCustomId('start-server'),
+        new MessageButton()
+          .setLabel('Stop')
+          .setStyle('DANGER')
+          .setCustomId('stop-server'),
+        new MessageButton()
+          .setLabel('Restart')
+          .setStyle('PRIMARY')
+          .setCustomId('restart-server'),
+        new MessageButton()
+          .setLabel('Url')
+          .setStyle('LINK')
+          .setURL(`${this.pterodactyl.url}/server/${choice[1]}`),
+      );
+
+      const embed = new MessageEmbed()
+        .addFields(
+          { name: 'Serveur', value: choice[0], inline: true },
+          { name: 'Id', value: choice[1], inline: true },
+          {
+            name: 'Status',
+            value: ServerState[serverResources.attributes.current_state],
+            inline: true,
+          },
+        )
+        .setTitle('Serveur Pterodactyl');
+
+      messagePayload = {
+        content: 'Id : ' + interaction.values[0],
+        components: [row],
+        embeds: [embed],
+      };
+    } catch (error) {
+      messagePayload = {
+        content: `Erreur lors de la récupération des informations du serveur ${choice[0]}`,
+        components: [],
+        embeds: [],
+      };
+    }
+    await interaction.editReply(messagePayload);
   }
 
   @ButtonComponent('start-server')
