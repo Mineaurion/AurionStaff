@@ -1,11 +1,18 @@
 import 'reflect-metadata';
 import 'dotenv/config';
 import { Intents, Interaction, Message } from 'discord.js';
-import { container } from 'tsyringe';
+import { container, Lifecycle } from 'tsyringe';
 import { Client, DIService } from 'discordx';
 import { dirname, importx } from '@discordx/importer';
 import { Koa } from '@discordx/koa';
 import promHttpMetrics from '@sigfox/koa-prometheus-http-metrics';
+import { CacheLocal } from './utils/cache_locale.js';
+
+container.register(
+  'CacheLocal',
+  { useClass: CacheLocal },
+  { lifecycle: Lifecycle.Singleton }, // <- this is important
+);
 
 export const client = new Client({
   simpleCommand: {

@@ -4,7 +4,7 @@
     "version": "PTDL_v2",
     "update_url": null
   },
-  "exported_at": "2022-06-15T15:23:50+02:00",
+  "exported_at": "2022-06-27T16:06:08+02:00",
   "name": "AurionStaff",
   "author": "yann@mineaurion.com",
   "description": "AurionStaff Egg\r\nThe startup command is unnecessary it will use the cmd defined in dockerfile",
@@ -82,6 +82,36 @@
       "name": "Chuck Token",
       "description": "Token de l'api chuck",
       "env_variable": "CHUCK_TOKEN",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string",
+      "field_type": "text"
+    },
+    {
+      "name": "JWT_SECRET",
+      "description": "Secret du JWT",
+      "env_variable": "JWT_SECRET",
+      "default_value": "mineaurionSECRET$",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string|max:20",
+      "field_type": "text"
+    },
+    {
+      "name": "Url de l'api",
+      "description": "Url de l'api de mineaurion",
+      "env_variable": "API_SERVER_DOMAIN",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|url",
+      "field_type": "text"
+    },
+    {
+      "name": "Token de l'api mineaurion",
+      "description": "",
+      "env_variable": "API_SERVER_TOKEN",
       "default_value": "",
       "user_viewable": true,
       "user_editable": true,

@@ -10,7 +10,12 @@ export const http = async <T>(
   const response = await fetch(request, init);
   if (!response.ok) {
     console.error('Erreur fetching', request);
+    if (response.status === 400) {
+      const body = (await response.json()) as Record<string, string>;
+      throw new ValidationError(body);
+    }
     throw response.statusText;
+    // throw new Error('Http Error, response is not ok');
   }
   const body = await response.text();
   if (body) {
@@ -18,6 +23,12 @@ export const http = async <T>(
   }
   return JSON.parse('{}');
 };
+
+export class ValidationError extends Error {
+  constructor(public validationErrors: Record<string, string>) {
+    super('Validation Error');
+  }
+}
 
 export const searchFieldValueFromFields = (
   fields: EmbedField[] | APIEmbedField[] | undefined,
