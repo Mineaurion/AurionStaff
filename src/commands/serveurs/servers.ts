@@ -182,7 +182,7 @@ export class Servers extends AbstractModal<Server> {
         );
         this.cacheLocal.del(format(this.cacheKeyForm, interaction.user.id));
         await interaction.editReply({
-          content: `Création/Mise à jour du serveur avec succés avec l'id ${serverCreateUpdate.id}`,
+          content: `Création/Mise à jour du serveur avec succès avec l'id ${serverCreateUpdate.id}`,
           components: [],
         });
       } catch (error) {

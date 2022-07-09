@@ -139,7 +139,7 @@ export abstract class AbstractModal<T> {
         this.getInteractionStep(),
         new MessageActionRow().addComponents(
           new MessageButton()
-            .setLabel('Creer ou mettre à jour')
+            .setLabel('Créer ou mettre à jour')
             .setStyle('SUCCESS')
             .setCustomId(`${this.modalName}-modalButton-final`)
             .setEmoji('▶️'),
