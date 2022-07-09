@@ -114,6 +114,12 @@ export const modals: ModalConfig[] = [
         style: 'SHORT',
         type: 'string',
       },
+      {
+        id: 'schedule.reboot.3',
+        label: 'Quatrième heure du reboot',
+        style: 'SHORT',
+        type: 'string',
+      },
     ],
   },
 ];
