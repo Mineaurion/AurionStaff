@@ -1,14 +1,18 @@
 FROM node:16-alpine as base
+ARG GITHUB_TOKEN
 LABEL org.opencontainers.image.source=https://github.com/Mineaurion/AurionStaff
 WORKDIR /usr/src/app
 RUN adduser --disabled-password --home /home/container container && \
   chown -R container:container /usr/src/app
 USER container
+COPY --chown=container:container package*.json ./
+COPY --chown=container:container .npmrc ./
 # Only usefull for pterodactyl panel
 ENV USER=container HOME=/home/container
-COPY --chown=container:container package*.json ./
+
 
 FROM base as dependencies
+RUN echo //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN} >> .npmrc
 RUN npm ci
 
 FROM dependencies as build
