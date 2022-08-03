@@ -1,4 +1,4 @@
-import { Get, Middleware, Router } from '@discordx/koa';
+import { Get, Router } from '@discordx/koa';
 import type { Context } from 'koa';
 import { injectable } from 'tsyringe';
 import { collectDefaultMetrics, Registry } from 'prom-client';

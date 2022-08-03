@@ -1,3 +1,4 @@
+import { TextInputStyle } from 'discord.js';
 import { ModalConfig } from './model';
 
 export const modals: ModalConfig[] = [
@@ -7,25 +8,25 @@ export const modals: ModalConfig[] = [
       {
         id: 'name',
         label: 'Nom du serveur',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'string',
       },
       {
         id: 'version.minecraft',
         label: 'Version Minecraft',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'string',
       },
       {
         id: 'version.modpack',
         label: 'Version du modpack',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'string',
       },
       {
         id: 'type',
         label: 'Type du modpack (overworld ou skyblock)',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'string',
       },
     ],
@@ -36,19 +37,19 @@ export const modals: ModalConfig[] = [
       {
         id: 'access.beta',
         label: 'Serveur beta ?',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'boolean',
       },
       {
         id: 'access.donator',
         label: 'Donateur Only ?',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'boolean',
       },
       {
         id: 'access.paying',
         label: 'Achat boutique ?',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'boolean',
       },
     ],
@@ -59,7 +60,7 @@ export const modals: ModalConfig[] = [
       {
         id: 'dns',
         label: 'Dns du serveur',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'string',
       },
     ],
@@ -70,25 +71,25 @@ export const modals: ModalConfig[] = [
       {
         id: 'administration.regen',
         label: 'Regen',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'boolean',
       },
       {
         id: 'administration.query.port',
         label: 'Port Query',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'number',
       },
       {
         id: 'administration.query.ip',
         label: 'IP Query',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'string',
       },
       {
         id: 'administration.externalId',
         label: 'UUID Pterodactyl',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'string',
       },
     ],
@@ -99,25 +100,25 @@ export const modals: ModalConfig[] = [
       {
         id: 'schedule.reboot.0',
         label: 'Première heure du reboot',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'string',
       },
       {
         id: 'schedule.reboot.1',
         label: 'Deuxième heure du reboot',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'string',
       },
       {
         id: 'schedule.reboot.2',
         label: 'Troisième heure du reboot',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'string',
       },
       {
         id: 'schedule.reboot.3',
         label: 'Quatrième heure du reboot',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         type: 'string',
       },
     ],

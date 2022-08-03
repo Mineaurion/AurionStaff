@@ -1,17 +1,20 @@
 import {
-  BaseMessageComponentOptions,
   ButtonInteraction,
   CacheType,
   CommandInteraction,
-  MessageActionRow,
-  MessageActionRowOptions,
-  MessageButton,
+  ActionRowBuilder,
+  ButtonBuilder,
   MessageComponentInteraction,
-  Modal,
-  ModalActionRowComponent,
+  ModalBuilder,
   ModalSubmitInteraction,
-  TextInputComponent,
-  WebhookEditMessageOptions,
+  TextInputBuilder,
+  MessageActionRowComponentBuilder,
+  ButtonStyle,
+  ActionRowData,
+  MessageActionRowComponentData,
+  JSONEncodable,
+  APIActionRowComponent,
+  APIMessageActionRowComponent,
 } from 'discord.js';
 import { ModalConfig } from '../commands/serveurs/model';
 import { CacheLocal } from '../utils/cache_locale.js';
@@ -51,12 +54,12 @@ export abstract class AbstractModal<T> {
     interaction: MessageComponentInteraction<CacheType>,
   ): Promise<void> {
     const modalConfig = this.config[modalNumber];
-    const modal = new Modal()
+    const modal = new ModalBuilder()
       .setTitle(modalConfig.title)
       .setCustomId(`${this.modalName}-modal-${modalNumber}`);
 
     modalConfig.elements.forEach((element) => {
-      const textComponent = new TextInputComponent()
+      const textComponent = new TextInputBuilder()
         .setCustomId(element.id)
         .setLabel(element.label)
         .setStyle(element.style);
@@ -70,11 +73,10 @@ export abstract class AbstractModal<T> {
         textComponent.setValue(value.toString());
       }
       modal.addComponents(
-        new MessageActionRow<ModalActionRowComponent>().addComponents(
-          textComponent,
-        ),
+        new ActionRowBuilder<TextInputBuilder>().addComponents(textComponent),
       );
     });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await interaction.showModal(modal);
   }
 
@@ -117,30 +119,33 @@ export abstract class AbstractModal<T> {
     modalNumber: number,
     interaction: ModalSubmitInteraction,
   ): Promise<void> {
-    await interaction.deferUpdate();
+    await interaction.deferReply({ ephemeral: true });
     const form = this.handleForm(modalNumber, interaction);
     const nextStepId =
       modalNumber + 1 >= this.config.length ? undefined : modalNumber + 1;
     const components: (
-      | MessageActionRow
-      | (Required<BaseMessageComponentOptions> & MessageActionRowOptions)
+      | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
+      | ActionRowData<
+          MessageActionRowComponentData | MessageActionRowComponentBuilder
+        >
+      | APIActionRowComponent<APIMessageActionRowComponent>
     )[] = [];
     if (nextStepId && Object.keys(form).length < this.totalNumberElements) {
       components.push(
-        new MessageActionRow().addComponents(
-          new MessageButton()
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
             .setLabel('Continue ?')
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setCustomId(`${this.modalName}-modalButton-${nextStepId}`),
         ),
       );
     } else if (Object.keys(form).length >= this.totalNumberElements) {
       components.push(
         this.getInteractionStep(),
-        new MessageActionRow().addComponents(
-          new MessageButton()
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
             .setLabel('Créer ou mettre à jour')
-            .setStyle('SUCCESS')
+            .setStyle(ButtonStyle.Success)
             .setCustomId(`${this.modalName}-modalButton-final`)
             .setEmoji('▶️'),
         ),
@@ -156,14 +161,14 @@ export abstract class AbstractModal<T> {
     });
   }
 
-  protected getInteractionStep(): MessageActionRow {
-    const row = new MessageActionRow();
+  protected getInteractionStep(): ActionRowBuilder<MessageActionRowComponentBuilder> {
+    const row = new ActionRowBuilder<MessageActionRowComponentBuilder>();
     for (let modalNumber = 0; modalNumber < this.config.length; modalNumber++) {
       row.addComponents(
-        new MessageButton()
+        new ButtonBuilder()
           .setCustomId(`servers-modalButton-${modalNumber}`)
           .setLabel(`Etape ${modalNumber + 1}`)
-          .setStyle('PRIMARY'),
+          .setStyle(ButtonStyle.Primary),
       );
     }
     return row;

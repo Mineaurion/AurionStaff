@@ -1,7 +1,7 @@
 import { HeadersInit } from 'node-fetch';
 import { singleton } from 'tsyringe';
 import { http } from '../../utils/helper.js';
-import { Server } from './model';
+import { Server } from '@mineaurion/api';
 
 @singleton()
 export class ServersService {
@@ -15,19 +15,19 @@ export class ServersService {
     Authorization: `Bearer ${this.token}`,
   };
 
-  public async getServers(): Promise<Required<Server>[]> {
+  public async getServers(): Promise<Server[]> {
     return http<Required<Server>[]>(`${this.url}/servers`, {
       headers: this.headers,
     });
   }
 
-  public async getOneServer(id: number): Promise<Required<Server>> {
+  public async getOneServer(id: number): Promise<Server> {
     return http<Required<Server>>(`${this.url}/servers/${id}`, {
       headers: this.headers,
     });
   }
 
-  public async postPutServer(server: Server): Promise<Required<Server>> {
+  public async postPutServer(server: Server): Promise<Server> {
     let url = `${this.url}/servers`;
     let method = 'POST';
     if (server.id) {

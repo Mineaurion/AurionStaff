@@ -38,49 +38,6 @@ export const searchFieldValueFromFields = (
 };
 
 /**
- * @description Suivant le nom de la commande permet de retourner un tableau des groupes qui ont accès à la commande.
- * La variable permissionConfig permet de configurer les roles qui ont accès à la commande en question.
- * La fonction part du principe que chaque commande avec l'annotation @Permission(staffPermission) doit avoir une config
- */
-export const staffPermission = (
-  guild: Guild,
-  cmd: ApplicationCommandMixin | SimpleCommandMessage,
-): ApplicationCommandPermissions | ApplicationCommandPermissions[] => {
-  const roleCmd = permissionConfig[cmd.name];
-  if (!roleCmd) {
-    throw new Error(
-      `La commande ${cmd.name} n'existe pas dans le tableau de configuration, merci de l'ajouter`,
-    );
-  }
-  const permissions: ApplicationCommandPermissions[] = [];
-  roleCmd.forEach((roleName) => {
-    const roleId = guild.roles.cache.find((role) => role.name === roleName)?.id;
-    if (roleId) {
-      permissions.push({
-        id: roleId,
-        permission: true,
-        type: 'ROLE',
-      });
-    }
-  });
-
-  if (permissions.length > 0) {
-    return permissions;
-  } else {
-    throw new Error(
-      "Aucun des roles fournis n'a pas être trouver, le bot ne pourra pas fonctionner",
-    );
-  }
-};
-
-// La clef est le nom de la commande et le tableau contient les noms des roles qui ont accès à la commande
-const permissionConfig: Record<string, string[]> = {
-  multicraft: ['Rouges', 'Admin', 'aurionstaff-reboot-serveur'],
-  pterodactyl: ['Rouges', 'Admin', 'aurionstaff-reboot-serveur'],
-  chuck: ['Staff'],
-};
-
-/**
  * @description Convertie une string en boolean.
  *
  * La convertion va faire la chose suivante :

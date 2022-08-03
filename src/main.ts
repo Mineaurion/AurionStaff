@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import 'dotenv/config';
-import { Intents, Interaction, Message } from 'discord.js';
+import { IntentsBitField, Interaction, Message } from 'discord.js';
 import { container, Lifecycle } from 'tsyringe';
-import { Client, DIService } from 'discordx';
+import { Client, DIService, tsyringeDependencyRegistryEngine } from 'discordx';
 import { dirname, importx } from '@discordx/importer';
 import { Koa } from '@discordx/koa';
 import promHttpMetrics from '@sigfox/koa-prometheus-http-metrics';
@@ -19,11 +19,11 @@ export const client = new Client({
     prefix: '/',
   },
   intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MEMBERS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    Intents.FLAGS.GUILD_VOICE_STATES,
+    IntentsBitField.Flags.Guilds,
+    IntentsBitField.Flags.GuildMembers,
+    IntentsBitField.Flags.GuildMessages,
+    IntentsBitField.Flags.GuildMessageReactions,
+    IntentsBitField.Flags.GuildVoiceStates,
   ],
   // If you only want to use global commands only, comment this line
   botGuilds: [
@@ -41,10 +41,6 @@ client.once('ready', async () => {
     guild: { log: true },
     global: { log: true },
   });
-
-  // init permissions; enabled log to see changes
-  // TODO: @see https://github.com/oceanroleplay/discord.ts/issues/661
-  await client.initApplicationPermissions(true);
 
   // uncomment this line to clear all guild commands,
   // useful when moving to global commands from guild commands
@@ -73,7 +69,7 @@ const run = async (): Promise<void> => {
   if (!token) {
     throw Error('Could not find BOT_TOKEN in your environment');
   }
-  DIService.container = container;
+  DIService.engine = tsyringeDependencyRegistryEngine.setInjector(container);
   await client.login(token); // provide your bot token
 
   // ************* rest api section: start **********

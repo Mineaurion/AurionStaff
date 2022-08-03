@@ -1,15 +1,20 @@
-import { ContextMenuInteraction } from 'discord.js';
+import {
+  ApplicationCommandType,
+  MessageContextMenuCommandInteraction,
+} from 'discord.js';
 import { Discord, ContextMenu } from 'discordx';
 
 @Discord()
 export class ContextTest {
-  @ContextMenu('MESSAGE', 'message context')
-  messageHandler(interaction: ContextMenuInteraction): void {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  @ContextMenu(ApplicationCommandType.Message, 'message context')
+  messageHandler(interaction: MessageContextMenuCommandInteraction): void {
     interaction.reply('I am user context handler');
   }
 
-  @ContextMenu('USER', 'user context')
-  userHandler(interaction: ContextMenuInteraction): void {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  @ContextMenu(ApplicationCommandType.User, 'user context')
+  userHandler(interaction: MessageContextMenuCommandInteraction): void {
     interaction.reply('I am user context handler');
   }
 }

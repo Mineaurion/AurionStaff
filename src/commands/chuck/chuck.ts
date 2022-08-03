@@ -3,23 +3,21 @@ import {
   AutocompleteInteraction,
   CommandInteraction,
   InteractionReplyOptions,
-  MessageActionRow,
-  MessageAttachment,
-  MessageButton,
-  MessageEmbed,
-  WebhookEditMessageOptions,
-  WebhookMessageOptions,
+  ActionRowBuilder,
+  AttachmentBuilder,
+  ButtonBuilder,
+  EmbedBuilder,
+  MessageActionRowComponentBuilder,
+  ApplicationCommandOptionType,
+  ButtonStyle,
 } from 'discord.js';
-import { Discord, Permission, Slash, SlashGroup, SlashOption } from 'discordx';
+import { Discord, Slash, SlashGroup, SlashOption } from 'discordx';
 import { injectable } from 'tsyringe';
 import { ChuckService } from './chuckService.js';
 import jsonwebtoken from 'jsonwebtoken';
-import { staffPermission } from '../../utils/helper.js';
 
 @Discord()
 @injectable()
-@Permission(false)
-@Permission(staffPermission)
 @SlashGroup({ name: 'chuck', description: 'Chuck Command' })
 @SlashGroup('chuck')
 export class Chuck {
@@ -38,10 +36,10 @@ export class Chuck {
       content: 'Page des sanctions',
       ephemeral: true,
       components: [
-        new MessageActionRow().addComponents(
-          new MessageButton()
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
             .setLabel('Lien')
-            .setStyle('LINK')
+            .setStyle(ButtonStyle.Link)
             .setURL(`${this.botDomain}/chuck/sanctions?token=${jwt}`),
         ),
       ],
@@ -52,7 +50,7 @@ export class Chuck {
   async player(
     @SlashOption('uuid', {
       autocomplete: true,
-      type: 'STRING',
+      type: ApplicationCommandOptionType.String,
       description: 'UUID ou Pseudo du joueur',
     })
     uuid: string,
@@ -76,8 +74,8 @@ export class Chuck {
       let messagePayload: InteractionReplyOptions = {};
       try {
         const playerDetail = await this.chuckService.getPlayerDetail(uuid);
-        const embed = new MessageEmbed()
-          .setColor('GREEN')
+        const embed = new EmbedBuilder()
+          .setColor('Green')
           .addFields([
             { name: 'Nickname', value: playerDetail.player.nickname },
             { name: 'UUID', value: uuid },
@@ -117,9 +115,9 @@ export class Chuck {
           ])
           .setImage(`https://cravatar.eu/avatar/${uuid}/50.png`);
         const jwt = this.geneateJwt(interaction.user.id);
-        const profil = new MessageButton()
+        const profil = new ButtonBuilder()
           .setLabel('Full Profil')
-          .setStyle('LINK')
+          .setStyle(ButtonStyle.Link)
           .setURL(
             // eslint-disable-next-line max-len
             `${this.botDomain}/chuck/player/${uuid}?nickname=${playerDetail.player.nickname}&token=${jwt}`,
@@ -127,7 +125,11 @@ export class Chuck {
         messagePayload = {
           embeds: [embed],
           ephemeral: true,
-          components: [new MessageActionRow().addComponents(profil)],
+          components: [
+            new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+              profil,
+            ),
+          ],
         };
       } catch (error) {
         messagePayload = {
@@ -146,28 +148,28 @@ export class Chuck {
   async search(
     @SlashOption('server', {
       autocomplete: true,
-      type: 'STRING',
+      type: ApplicationCommandOptionType.String,
       description: 'Serveur de jeu',
       required: false,
     })
     server: string | undefined,
     @SlashOption('uuid', {
       autocomplete: true,
-      type: 'STRING',
+      type: ApplicationCommandOptionType.String,
       description: 'UUID ou Pseudo du joueur',
       required: false,
     })
     uuid: string | undefined,
     @SlashOption('date_begin', {
       autocomplete: false,
-      type: 'STRING',
+      type: ApplicationCommandOptionType.String,
       description: 'Date de début, exemple : 2022-01-01',
       required: false,
     })
     dateBegin: string | undefined,
     @SlashOption('date_end', {
       autocomplete: false,
-      type: 'STRING',
+      type: ApplicationCommandOptionType.String,
       description: 'Date de fin, exemple : 2022-02-01',
       required: false,
     })
@@ -220,10 +222,9 @@ export class Chuck {
             csv += `${server};${connection.player.uuid};${connection.player.nickname};${dateLogin};${dateLogout}\n`;
           });
         }
-        const attachement = new MessageAttachment(
-          Buffer.from(csv, 'utf-8'),
-          'connections.csv',
-        );
+        const attachement = new AttachmentBuilder(Buffer.from(csv, 'utf-8'), {
+          name: 'connections.csv',
+        });
         interaction.editReply({
           content: 'Résultats :',
           files: [attachement],

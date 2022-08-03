@@ -1,33 +1,4 @@
-import { TextInputStyleResolvable } from 'discord.js';
-
-export interface Server {
-  id?: number;
-  name: string;
-  version: {
-    minecraft: string;
-    modpack: string;
-  };
-  type: 'overworld' | 'skyblock';
-  access: {
-    beta: boolean;
-    donator: boolean;
-    paying: boolean;
-  };
-  dns: string;
-  administration: {
-    regen: boolean;
-    query: Address;
-    externalId: string; // UUID pterodactyl - Full Uuid
-  };
-  schedule?: {
-    reboot: string[];
-  };
-}
-
-interface Address {
-  ip: string;
-  port: number;
-}
+import { TextInputStyle } from 'discord.js';
 
 export interface ModalConfig {
   title: string;
@@ -38,6 +9,6 @@ interface ModalElement {
   id: string;
   value?: string;
   label: string;
-  style: TextInputStyleResolvable;
+  style: TextInputStyle;
   type: 'boolean' | 'string' | 'number';
 }

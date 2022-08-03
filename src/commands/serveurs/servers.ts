@@ -1,27 +1,28 @@
 import {
   ButtonInteraction,
   CommandInteraction,
-  MessageActionRow,
-  MessageButton,
-  MessageSelectMenu,
-  MessageSelectOptionData,
+  ActionRowBuilder,
+  ButtonBuilder,
+  SelectMenuBuilder,
+  SelectMenuComponentOptionData,
   ModalSubmitInteraction,
   SelectMenuInteraction,
   WebhookEditMessageOptions,
+  MessageActionRowComponentBuilder,
+  ButtonStyle,
 } from 'discord.js';
 import {
   Discord,
   Slash,
-  Permission,
   ModalComponent,
   ButtonComponent,
   SelectMenuComponent,
 } from 'discordx';
 import { container, injectable } from 'tsyringe';
 import { CacheLocal } from '../../utils/cache_locale.js';
-import { ValidationError, staffPermission } from '../../utils/helper.js';
+import { ValidationError } from '../../utils/helper.js';
 import { modals } from './config.js';
-import { Server } from './model';
+import { Server } from '@mineaurion/api';
 import { AbstractModal, FlattenTypeModal } from '../../libs/AbstractModal.js';
 import { ServersService } from './serversService.js';
 import { format } from 'util';
@@ -29,8 +30,6 @@ import flat from 'flat';
 
 @Discord()
 @injectable()
-@Permission(false)
-@Permission(staffPermission)
 export class Servers extends AbstractModal<Server> {
   constructor(private service: ServersService) {
     const cacheLocal: CacheLocal = container.resolve('CacheLocal');
@@ -41,20 +40,21 @@ export class Servers extends AbstractModal<Server> {
     description: 'Menu des serveurs pour Pterodactyl',
   })
   async slashCommand(interaction: CommandInteraction): Promise<void> {
-    const row = new MessageActionRow().addComponents(
-      new MessageButton()
-        .setLabel("Création d'un serveur")
-        .setStyle('PRIMARY')
-        .setCustomId('servers-modalButton-0'),
-      new MessageButton()
-        .setLabel("Edition d'un serveur")
-        .setStyle('SECONDARY')
-        .setCustomId('servers-edit'),
-      new MessageButton()
-        .setLabel("Suppression d'un serveur")
-        .setStyle('DANGER')
-        .setCustomId('servers-remove'),
-    );
+    const row =
+      new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+        new ButtonBuilder()
+          .setLabel("Création d'un serveur")
+          .setStyle(ButtonStyle.Primary)
+          .setCustomId('servers-modalButton-0'),
+        new ButtonBuilder()
+          .setLabel("Edition d'un serveur")
+          .setStyle(ButtonStyle.Secondary)
+          .setCustomId('servers-edit'),
+        new ButtonBuilder()
+          .setLabel("Suppression d'un serveur")
+          .setStyle(ButtonStyle.Danger)
+          .setCustomId('servers-remove'),
+      );
 
     await interaction.reply({
       content: 'Menu de gestion des serveurs',
@@ -72,15 +72,17 @@ export class Servers extends AbstractModal<Server> {
       interaction.editReply({
         content: 'Selection le serveur',
         components: [
-          new MessageActionRow().addComponents(
-            new MessageSelectMenu()
+          new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+            new SelectMenuBuilder()
               .addOptions(serversListOption)
               .setCustomId(`servers-choice-${action}`),
           ),
         ],
       });
     } else {
-      interaction.editReply("Aucun serveur n'a été trouvé");
+      interaction.editReply({
+        content: "Aucun serveur n'a été trouvé",
+      });
     }
   }
 
@@ -93,15 +95,15 @@ export class Servers extends AbstractModal<Server> {
     await interaction.editReply({
       content: 'Etes-vous sur de vouloir supprimer ce serveur ?',
       components: [
-        new MessageActionRow().addComponents(
-          new MessageButton()
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
             .setLabel('Oui')
             .setCustomId(`servers-choice-remove-yes-${choice}`)
-            .setStyle('SUCCESS'),
-          new MessageButton()
+            .setStyle(ButtonStyle.Success),
+          new ButtonBuilder()
             .setLabel('Non')
             .setCustomId(`servers-choice-remove-no-${choice}`)
-            .setStyle('DANGER'),
+            .setStyle(ButtonStyle.Danger),
         ),
       ],
     });
@@ -189,10 +191,10 @@ export class Servers extends AbstractModal<Server> {
         const messagePayload: WebhookEditMessageOptions = {
           components: [
             this.getInteractionStep(),
-            new MessageActionRow().addComponents(
-              new MessageButton()
+            new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+              new ButtonBuilder()
                 .setLabel("Relancer l'appel api ?")
-                .setStyle('PRIMARY')
+                .setStyle(ButtonStyle.Primary)
                 .setCustomId(interaction.customId)
                 .setEmoji('🔁'),
             ),
@@ -215,7 +217,9 @@ export class Servers extends AbstractModal<Server> {
     }
   }
 
-  private async getSelectionOptionServer(): Promise<MessageSelectOptionData[]> {
+  private async getSelectionOptionServer(): Promise<
+    SelectMenuComponentOptionData[]
+  > {
     const servers = await this.service.getServers();
     return servers.map((server) => {
       return {

@@ -1,26 +1,18 @@
 import {
   CommandInteraction,
-  MessageActionRow,
+  ActionRowBuilder,
   SelectMenuInteraction,
-  MessageSelectMenu,
-  MessageButton,
+  SelectMenuBuilder,
+  ButtonBuilder,
   ButtonInteraction,
-  MessageEmbed,
+  EmbedBuilder,
   CacheType,
   WebhookEditMessageOptions,
+  MessageActionRowComponentBuilder,
+  ButtonStyle,
 } from 'discord.js';
-import {
-  Discord,
-  Slash,
-  SelectMenuComponent,
-  ButtonComponent,
-  Permission,
-} from 'discordx';
-import {
-  searchFieldValueFromFields,
-  http,
-  staffPermission,
-} from '../../utils/helper.js';
+import { Discord, Slash, SelectMenuComponent, ButtonComponent } from 'discordx';
+import { searchFieldValueFromFields, http } from '../../utils/helper.js';
 import { ServerListReponse, ServerResources } from './interface';
 
 enum ServerState {
@@ -38,8 +30,6 @@ enum ServerSignal {
 }
 
 @Discord()
-@Permission(false)
-@Permission(staffPermission)
 export class Pterodactyl {
   private pterodactyl: { url: string; token: string } = {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -76,13 +66,17 @@ export class Pterodactyl {
         };
       });
     if (serverListOption.length > 0) {
-      const menu = new MessageSelectMenu()
+      const menu = new SelectMenuBuilder()
         .addOptions(serverListOption)
         .setCustomId('pterodactyl-menu');
 
       interaction.editReply({
         content: 'Selectionne le serveur',
-        components: [new MessageActionRow().addComponents(menu)],
+        components: [
+          new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+            menu,
+          ),
+        ],
       });
     } else {
       interaction.editReply("Aucun serveur n'a été trouvé");
@@ -108,26 +102,27 @@ export class Pterodactyl {
         },
       );
 
-      const row = new MessageActionRow().addComponents(
-        new MessageButton()
-          .setLabel('Start')
-          .setStyle('SUCCESS')
-          .setCustomId('start-server'),
-        new MessageButton()
-          .setLabel('Stop')
-          .setStyle('DANGER')
-          .setCustomId('stop-server'),
-        new MessageButton()
-          .setLabel('Restart')
-          .setStyle('PRIMARY')
-          .setCustomId('restart-server'),
-        new MessageButton()
-          .setLabel('Url')
-          .setStyle('LINK')
-          .setURL(`${this.pterodactyl.url}/server/${choice[1]}`),
-      );
+      const row =
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
+            .setLabel('Start')
+            .setStyle(ButtonStyle.Success)
+            .setCustomId('start-server'),
+          new ButtonBuilder()
+            .setLabel('Stop')
+            .setStyle(ButtonStyle.Danger)
+            .setCustomId('stop-server'),
+          new ButtonBuilder()
+            .setLabel('Restart')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('restart-server'),
+          new ButtonBuilder()
+            .setLabel('Url')
+            .setStyle(ButtonStyle.Link)
+            .setURL(`${this.pterodactyl.url}/server/${choice[1]}`),
+        );
 
-      const embed = new MessageEmbed()
+      const embed = new EmbedBuilder()
         .addFields(
           { name: 'Serveur', value: choice[0], inline: true },
           { name: 'Id', value: choice[1], inline: true },
