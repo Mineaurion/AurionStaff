@@ -93,7 +93,7 @@ export class Servers extends AbstractModal<Server> {
     await interaction.deferUpdate();
     const choice = interaction.values[0];
     await interaction.editReply({
-      content: 'Etes-vous sur de vouloir supprimer ce serveur ?',
+      content: 'Etes-vous sûr de vouloir supprimer ce serveur ?',
       components: [
         new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
           new ButtonBuilder()
@@ -118,13 +118,13 @@ export class Servers extends AbstractModal<Server> {
     const confirm = splitCustomId.at(-2) === 'yes' ? true : false;
     const serverId = parseInt(splitCustomId.at(-1) as string);
     const messagePayload: WebhookEditMessageOptions = {
-      content: "Aucune action n'a été réalisé",
+      content: "Aucune action n'a été réalisée",
       components: [],
     };
     try {
       if (confirm) {
         await this.service.deleteServer(serverId);
-        messagePayload.content = `Le serveur ${serverId} vient d'être supprimer`;
+        messagePayload.content = `Le serveur ${serverId} vient d'être supprimé`;
       }
     } catch (error) {
       messagePayload.content = `L'api renvoie l'erreur suivante ${
