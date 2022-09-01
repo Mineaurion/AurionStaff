@@ -180,7 +180,7 @@ export class Pterodactyl {
     interaction.reply(
       `Le signal \`${signal}\` a bien été envoyé au serveur \`${
         serverName || id
-      }\` par ${interaction.user.username}.`,
+      }\` par ${interaction.user.toString()} (${interaction.user.username}).`,
     );
     return await http(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
