@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/Mineaurion/AurionStaff#readme",
   "dependencies": {
-    "@discordjs/rest": "^1.0.1",
+    "@discordjs/rest": "^1.1.0",
     "@discordx/importer": "^1.1.10",
     "@discordx/koa": "^1.1.1",
     "@discordx/pagination": "^3.0.0",
