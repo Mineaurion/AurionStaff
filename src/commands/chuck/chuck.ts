@@ -28,7 +28,7 @@ export class Chuck {
 
   constructor(private chuckService: ChuckService) {}
 
-  @Slash('sanctions')
+  @Slash({ name: 'sanctions', description: 'Page des sanctions' })
   defaultCommand(interaction: CommandInteraction): void {
     const jwt = this.geneateJwt(interaction.user.id);
 
@@ -46,9 +46,10 @@ export class Chuck {
     });
   }
 
-  @Slash('player')
+  @Slash({ name: 'player', description: "Page des sanctions d'un joueur" })
   async player(
-    @SlashOption('uuid', {
+    @SlashOption({
+      name: 'uuid',
       autocomplete: true,
       type: ApplicationCommandOptionType.String,
       description: 'UUID ou Pseudo du joueur',
@@ -144,30 +145,37 @@ export class Chuck {
     }
   }
 
-  @Slash('search')
+  @Slash({
+    name: 'search',
+    description: 'Recherche les connexions aux serveurs',
+  })
   async search(
-    @SlashOption('server', {
+    @SlashOption({
+      name: 'server',
       autocomplete: true,
       type: ApplicationCommandOptionType.String,
       description: 'Serveur de jeu',
       required: false,
     })
     server: string | undefined,
-    @SlashOption('uuid', {
+    @SlashOption({
+      name: 'uuid',
       autocomplete: true,
       type: ApplicationCommandOptionType.String,
       description: 'UUID ou Pseudo du joueur',
       required: false,
     })
     uuid: string | undefined,
-    @SlashOption('date_begin', {
+    @SlashOption({
+      name: 'date_begin',
       autocomplete: false,
       type: ApplicationCommandOptionType.String,
       description: 'Date de début, exemple : 2022-01-01',
       required: false,
     })
     dateBegin: string | undefined,
-    @SlashOption('date_end', {
+    @SlashOption({
+      name: 'date_end',
       autocomplete: false,
       type: ApplicationCommandOptionType.String,
       description: 'Date de fin, exemple : 2022-02-01',

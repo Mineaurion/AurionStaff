@@ -1,6 +1,5 @@
 import { APIEmbedField } from 'discord-api-types/v10';
-import { ApplicationCommandPermissions, EmbedField, Guild } from 'discord.js';
-import { ApplicationCommandMixin, SimpleCommandMessage } from 'discordx';
+import { EmbedField } from 'discord.js';
 import fetch, { RequestInfo, RequestInit } from 'node-fetch';
 
 export const http = async <T>(

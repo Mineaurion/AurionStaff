@@ -38,7 +38,8 @@ export class Pterodactyl {
     token: process.env.PTERODACTYL_API_TOKEN!,
   };
 
-  @Slash('pterodactyl', {
+  @Slash({
+    name: 'pterodactyl',
     description: 'Menu des serveurs pour Pterodactyl',
   })
   async pterodactylServers(interaction: CommandInteraction): Promise<unknown> {
@@ -86,7 +87,7 @@ export class Pterodactyl {
     return;
   }
 
-  @SelectMenuComponent('pterodactyl-menu')
+  @SelectMenuComponent({ id: 'pterodactyl-menu' })
   async handleServerChoice(interaction: SelectMenuInteraction): Promise<void> {
     await interaction.deferUpdate();
 
@@ -149,15 +150,15 @@ export class Pterodactyl {
     await interaction.editReply(messagePayload);
   }
 
-  @ButtonComponent('start-server')
+  @ButtonComponent({ id: 'start-server' })
   startServer(interaction: ButtonInteraction): void {
     this.sendPowerState(interaction, ServerSignal.START);
   }
-  @ButtonComponent('stop-server')
+  @ButtonComponent({ id: 'stop-server' })
   stopServer(interaction: ButtonInteraction): void {
     this.sendPowerState(interaction, ServerSignal.STOP);
   }
-  @ButtonComponent('restart-server')
+  @ButtonComponent({ id: 'restart-server' })
   restartServer(interaction: ButtonInteraction): void {
     this.sendPowerState(interaction, ServerSignal.RESTART);
   }

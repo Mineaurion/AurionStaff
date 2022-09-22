@@ -36,7 +36,8 @@ export class Servers extends AbstractModal<Server> {
     super(cacheLocal, 'servers', modals);
   }
 
-  @Slash('serveurs', {
+  @Slash({
+    name: 'serveurs',
     description: 'Menu des serveurs pour Pterodactyl',
   })
   async slashCommand(interaction: CommandInteraction): Promise<void> {
@@ -63,7 +64,7 @@ export class Servers extends AbstractModal<Server> {
     });
   }
 
-  @ButtonComponent(/servers-(edit|remove)/)
+  @ButtonComponent({ id: /servers-(edit|remove)/ })
   async handleEdit(interaction: ButtonInteraction): Promise<void> {
     await interaction.deferUpdate();
     const action = interaction.customId.split('-').at(-1) as string;
@@ -86,7 +87,7 @@ export class Servers extends AbstractModal<Server> {
     }
   }
 
-  @SelectMenuComponent('servers-choice-remove')
+  @SelectMenuComponent({ id: 'servers-choice-remove' })
   async handleServerRemoveChoice(
     interaction: SelectMenuInteraction,
   ): Promise<void> {
@@ -109,7 +110,7 @@ export class Servers extends AbstractModal<Server> {
     });
   }
 
-  @ButtonComponent(/servers-choice-remove-(yes|no)-[0-9]+/)
+  @ButtonComponent({ id: /servers-choice-remove-(yes|no)-[0-9]+/ })
   async handleServerRemoveChoiceConfirm(
     interaction: ButtonInteraction,
   ): Promise<void> {
@@ -134,7 +135,7 @@ export class Servers extends AbstractModal<Server> {
     await interaction.editReply(messagePayload);
   }
 
-  @SelectMenuComponent('servers-choice-edit')
+  @SelectMenuComponent({ id: 'servers-choice-edit' })
   async handleServerEditChoice(
     interaction: SelectMenuInteraction,
   ): Promise<void> {
@@ -152,7 +153,7 @@ export class Servers extends AbstractModal<Server> {
     });
   }
 
-  @ButtonComponent(/servers-modalButton-[0-9]/)
+  @ButtonComponent({ id: /servers-modalButton-[0-9]/ })
   async handleStep(interaction: ButtonInteraction): Promise<void> {
     await this.sendModal(
       parseInt(interaction.customId.split('-')[2]),
@@ -160,7 +161,7 @@ export class Servers extends AbstractModal<Server> {
     );
   }
 
-  @ModalComponent(/servers-modal-[0-9]/)
+  @ModalComponent({ id: /servers-modal-[0-9]/ })
   async handleModal(interaction: ModalSubmitInteraction): Promise<void> {
     await this.handleNextStep(
       parseInt(interaction.customId.split('-')[2]),
@@ -168,7 +169,7 @@ export class Servers extends AbstractModal<Server> {
     );
   }
 
-  @ButtonComponent('servers-modalButton-final')
+  @ButtonComponent({ id: 'servers-modalButton-final' })
   async handleFinal(interaction: ButtonInteraction): Promise<void> {
     await interaction.deferUpdate();
     const server = flat.unflatten<FlattenTypeModal, Server>(
