@@ -51,6 +51,7 @@ export interface Detail {
     uuid: string;
     nickname: string;
   };
+  playTimes: MinutesPlayed[];
   sanctions: {
     stats: {
       bans: number;
@@ -63,6 +64,11 @@ export interface Detail {
       muted: boolean;
     };
   };
+}
+
+export interface MinutesPlayed {
+  minutes: number | string;
+  server: string;
 }
 
 interface ConnectionDate {

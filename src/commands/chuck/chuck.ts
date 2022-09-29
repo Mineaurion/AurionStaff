@@ -53,6 +53,7 @@ export class Chuck {
       autocomplete: true,
       type: ApplicationCommandOptionType.String,
       description: 'UUID ou Pseudo du joueur',
+      required: true,
     })
     uuid: string,
     interaction: CommandInteraction,
@@ -75,6 +76,9 @@ export class Chuck {
       let messagePayload: InteractionReplyOptions = {};
       try {
         const playerDetail = await this.chuckService.getPlayerDetail(uuid);
+        const totalPlayedTimes = playerDetail.playTimes.reduce((acc, obj) => {
+          return acc + parseInt(obj.minutes.toString());
+        }, 0);
         const embed = new EmbedBuilder()
           .setColor('Green')
           .addFields([
@@ -94,6 +98,10 @@ export class Chuck {
               name: 'Sanctions :',
               // eslint-disable-next-line max-len
               value: `Ban : ${playerDetail.sanctions.stats.bans}  Mutes: ${playerDetail.sanctions.stats.mutes}\nKicks: ${playerDetail.sanctions.stats.kicks}  Warns: ${playerDetail.sanctions.stats.warns}`,
+            },
+            {
+              name: 'Temps de jeu total',
+              value: (totalPlayedTimes / 1440).toFixed(2).toString() + ' jours',
             },
             {
               name: 'Première connexion',

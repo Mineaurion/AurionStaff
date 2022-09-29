@@ -45,6 +45,13 @@ export class Chuck {
   async profil(context: Context): Promise<void> {
     const nickname: string = context.request.query.nickname as string;
     const uuid: string = context.params.uuid;
+    const playerDetail = await this.service.getPlayerDetail(uuid);
+    const timePlayed = playerDetail.playTimes.map((obj) => {
+      return {
+        server: obj.server,
+        minutes: obj.minutes.toString(),
+      };
+    });
     const template = Mustache.render(
       this.getTemplateString('sanctions.mustache'),
       {
@@ -52,6 +59,9 @@ export class Chuck {
         mutes: await this.service.getPlayerMute(uuid),
         kicks: await this.service.getPlayerKick(uuid),
         warns: await this.service.getPlayerWarn(uuid),
+        timePlayed,
+        firstSeen: playerDetail.firstLogin.date_login,
+        lastSeen: playerDetail.lastLogout.date_logout,
         player: {
           uuid,
           nickname,
