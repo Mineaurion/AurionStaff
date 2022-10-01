@@ -63,6 +63,12 @@ export const modals: ModalConfig[] = [
         style: TextInputStyle.Short,
         type: 'string',
       },
+      {
+        id: 'hidden',
+        label: 'Cacher le serveur ?',
+        style: TextInputStyle.Short,
+        type: 'boolean',
+      },
     ],
   },
   {
