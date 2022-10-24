@@ -70,7 +70,7 @@ export class Servers extends AbstractModal<Server> {
     const action = interaction.customId.split('-').at(-1) as string;
     const serversListOption = await this.getSelectionOptionServer();
     if (serversListOption.length > 0) {
-      interaction.editReply({
+      await interaction.editReply({
         content: 'Selection le serveur',
         components: [
           new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
@@ -81,7 +81,7 @@ export class Servers extends AbstractModal<Server> {
         ],
       });
     } else {
-      interaction.editReply({
+      await interaction.editReply({
         content: "Aucun serveur n'a été trouvé",
       });
     }
@@ -116,7 +116,7 @@ export class Servers extends AbstractModal<Server> {
   ): Promise<void> {
     await interaction.deferUpdate();
     const splitCustomId = interaction.customId.split('-');
-    const confirm = splitCustomId.at(-2) === 'yes' ? true : false;
+    const confirm = splitCustomId.at(-2) === 'yes';
     const serverId = parseInt(splitCustomId.at(-1) as string);
     const messagePayload: WebhookEditMessageOptions = {
       content: "Aucune action n'a été réalisée",
