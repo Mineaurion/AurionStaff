@@ -98,22 +98,22 @@ export const modals: ModalConfig[] = [
     title: 'Etape 5',
     elements: [
       {
-        id: 'administration.query.port',
-        label: 'Port Query',
-        style: TextInputStyle.Short,
-        type: 'number',
-      },
-      {
         id: 'administration.query.ip',
         label: 'IP Query',
         style: TextInputStyle.Short,
         type: 'string',
       },
       {
+        id: 'administration.query.port',
+        label: 'Port Query',
+        style: TextInputStyle.Short,
+        type: 'number',
+      },
+      {
         id: 'administration.prometheus.ip',
         label: 'Port Prometheus',
         style: TextInputStyle.Short,
-        type: 'number',
+        type: 'string',
       },
       {
         id: 'administration.prometheus.port',
