@@ -140,8 +140,8 @@ export abstract class AbstractModal<T> {
         ),
       );
     } else if (Object.keys(form).length >= this.totalNumberElements) {
+      this.getInteractionStep().forEach((row) => components.push(row));
       components.push(
-        ...this.getInteractionStep(),
         new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
           new ButtonBuilder()
             .setLabel('Créer ou mettre à jour')
@@ -165,16 +165,16 @@ export abstract class AbstractModal<T> {
     const rowArray = [];
     let row = new ActionRowBuilder<MessageActionRowComponentBuilder>();
     for (let modalNumber = 0; modalNumber < this.config.length; modalNumber++) {
-      if (modalNumber % 5 === 0) {
-        rowArray.push(row);
-        row = new ActionRowBuilder<MessageActionRowComponentBuilder>();
-      }
       row.addComponents(
         new ButtonBuilder()
           .setCustomId(`servers-modalButton-${modalNumber}`)
           .setLabel(`Etape ${modalNumber + 1}`)
           .setStyle(ButtonStyle.Primary),
       );
+      if (modalNumber % 4 === 0) {
+        rowArray.push(row);
+        row = new ActionRowBuilder<MessageActionRowComponentBuilder>();
+      }
     }
     return rowArray;
   }
