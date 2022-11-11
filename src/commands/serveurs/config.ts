@@ -75,11 +75,28 @@ export const modals: ModalConfig[] = [
     title: 'Etape 4',
     elements: [
       {
-        id: 'administration.regen',
-        label: 'Regen',
+        id: 'administration.backup',
+        label: 'Backup ?',
         style: TextInputStyle.Short,
         type: 'boolean',
       },
+      {
+        id: 'administration.regen',
+        label: 'Regen ?',
+        style: TextInputStyle.Short,
+        type: 'boolean',
+      },
+      {
+        id: 'administration.externalId',
+        label: 'UUID Pterodactyl',
+        style: TextInputStyle.Short,
+        type: 'string',
+      },
+    ],
+  },
+  {
+    title: 'Etape 5',
+    elements: [
       {
         id: 'administration.query.port',
         label: 'Port Query',
@@ -93,10 +110,16 @@ export const modals: ModalConfig[] = [
         type: 'string',
       },
       {
-        id: 'administration.externalId',
-        label: 'UUID Pterodactyl',
+        id: 'administration.prometheus.ip',
+        label: 'Port Prometheus',
         style: TextInputStyle.Short,
-        type: 'string',
+        type: 'number',
+      },
+      {
+        id: 'administration.prometheus.port',
+        label: 'IP Prometheus',
+        style: TextInputStyle.Short,
+        type: 'number',
       },
     ],
   },
