@@ -149,7 +149,7 @@ export class Servers extends AbstractModal<Server> {
     );
     this.cacheLocal.set(format(this.cacheKeyForm, interaction.user.id), server);
     await interaction.editReply({
-      components: [this.getInteractionStep()],
+      components: [...this.getInteractionStep()],
     });
   }
 
@@ -191,7 +191,7 @@ export class Servers extends AbstractModal<Server> {
       } catch (error) {
         const messagePayload: WebhookEditMessageOptions = {
           components: [
-            this.getInteractionStep(),
+            ...this.getInteractionStep(),
             new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
               new ButtonBuilder()
                 .setLabel("Relancer l'appel api ?")
