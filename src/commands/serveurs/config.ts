@@ -111,13 +111,13 @@ export const modals: ModalConfig[] = [
       },
       {
         id: 'administration.prometheus.ip',
-        label: 'Port Prometheus',
+        label: 'IP Prometheus',
         style: TextInputStyle.Short,
         type: 'string',
       },
       {
         id: 'administration.prometheus.port',
-        label: 'IP Prometheus',
+        label: 'Port Prometheus',
         style: TextInputStyle.Short,
         type: 'number',
       },
