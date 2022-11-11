@@ -38,7 +38,7 @@ export class Servers extends AbstractModal<Server> {
 
   @Slash({
     name: 'serveurs',
-    description: 'Menu des serveurs pour Pterodactyl',
+    description: 'Menu des serveurs',
   })
   async slashCommand(interaction: CommandInteraction): Promise<void> {
     const row =
