@@ -37,10 +37,7 @@ client.once('ready', async () => {
   await client.guilds.fetch();
 
   // init all application commands
-  await client.initApplicationCommands({
-    guild: { log: true },
-    global: { log: true },
-  });
+  await client.initApplicationCommands();
 
   // uncomment this line to clear all guild commands,
   // useful when moving to global commands from guild commands
