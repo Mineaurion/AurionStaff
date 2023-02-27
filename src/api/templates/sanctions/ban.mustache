@@ -5,7 +5,8 @@
           {{#displayPlayer}}<td>Joueur</td>{{/displayPlayer}}
           <td>Raison</td>
           <td>Staff</td>
-          <td>Date</td>
+          <td>Date de début</td>
+          <td>Date de fin</td>
           <td>Etat</td>
           <td>Date Unban</td>
           <td>UnBan Staff</td>
@@ -19,6 +20,7 @@
           <td>{{ reason }}</td>
           <td>{{ performer_nickname }}</td>
           <td>{{#dateFormat}}{{ date_begin }}{{/dateFormat}}</td>
+          <td>{{#dateFormat}}{{ date_end }}{{/dateFormat}}</td>
           <td>{{#active}}V{{/active}}{{^active}}X{{/active}}</td>
           <td>{{#dateFormat}}{{ undoer_date }}{{/dateFormat}}</td>
           <td>{{ undoer_nickname }}</td>
