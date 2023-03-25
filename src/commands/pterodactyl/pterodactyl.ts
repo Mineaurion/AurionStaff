@@ -1,15 +1,15 @@
 import {
   CommandInteraction,
   ActionRowBuilder,
-  SelectMenuInteraction,
-  SelectMenuBuilder,
+  StringSelectMenuInteraction,
+  StringSelectMenuBuilder,
   ButtonBuilder,
   ButtonInteraction,
   EmbedBuilder,
   CacheType,
-  WebhookEditMessageOptions,
   MessageActionRowComponentBuilder,
   ButtonStyle,
+  InteractionEditReplyOptions,
 } from 'discord.js';
 import { Discord, Slash, SelectMenuComponent, ButtonComponent } from 'discordx';
 import { searchFieldValueFromFields, http } from '../../utils/helper.js';
@@ -67,7 +67,7 @@ export class Pterodactyl {
         };
       });
     if (serverListOption.length > 0) {
-      const menu = new SelectMenuBuilder()
+      const menu = new StringSelectMenuBuilder()
         .addOptions(serverListOption)
         .setCustomId('pterodactyl-menu');
 
@@ -88,11 +88,13 @@ export class Pterodactyl {
   }
 
   @SelectMenuComponent({ id: 'pterodactyl-menu' })
-  async handleServerChoice(interaction: SelectMenuInteraction): Promise<void> {
+  async handleServerChoice(
+    interaction: StringSelectMenuInteraction,
+  ): Promise<void> {
     await interaction.deferUpdate();
 
     const choice = interaction.values[0].split(',');
-    let messagePayload: WebhookEditMessageOptions = {};
+    let messagePayload: InteractionEditReplyOptions = {};
     try {
       const serverResources = await http<ServerResources>(
         `${this.pterodactyl.url}/api/client/servers/${choice[1]}/resources`,

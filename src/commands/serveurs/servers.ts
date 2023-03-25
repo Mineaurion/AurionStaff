@@ -3,13 +3,13 @@ import {
   CommandInteraction,
   ActionRowBuilder,
   ButtonBuilder,
-  SelectMenuBuilder,
+  StringSelectMenuBuilder,
   SelectMenuComponentOptionData,
   ModalSubmitInteraction,
-  SelectMenuInteraction,
-  WebhookEditMessageOptions,
   MessageActionRowComponentBuilder,
   ButtonStyle,
+  InteractionEditReplyOptions,
+  StringSelectMenuInteraction,
 } from 'discord.js';
 import {
   Discord,
@@ -74,7 +74,7 @@ export class Servers extends AbstractModal<Server> {
         content: 'Selection le serveur',
         components: [
           new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
-            new SelectMenuBuilder()
+            new StringSelectMenuBuilder()
               .addOptions(serversListOption)
               .setCustomId(`servers-choice-${action}`),
           ),
@@ -89,7 +89,7 @@ export class Servers extends AbstractModal<Server> {
 
   @SelectMenuComponent({ id: 'servers-choice-remove' })
   async handleServerRemoveChoice(
-    interaction: SelectMenuInteraction,
+    interaction: StringSelectMenuInteraction,
   ): Promise<void> {
     await interaction.deferUpdate();
     const choice = interaction.values[0];
@@ -118,7 +118,7 @@ export class Servers extends AbstractModal<Server> {
     const splitCustomId = interaction.customId.split('-');
     const confirm = splitCustomId.at(-2) === 'yes';
     const serverId = parseInt(splitCustomId.at(-1) as string);
-    const messagePayload: WebhookEditMessageOptions = {
+    const messagePayload: InteractionEditReplyOptions = {
       content: "Aucune action n'a été réalisée",
       components: [],
     };
@@ -137,7 +137,7 @@ export class Servers extends AbstractModal<Server> {
 
   @SelectMenuComponent({ id: 'servers-choice-edit' })
   async handleServerEditChoice(
-    interaction: SelectMenuInteraction,
+    interaction: StringSelectMenuInteraction,
   ): Promise<void> {
     await interaction.deferUpdate();
     const server = flat.flatten(
@@ -189,7 +189,7 @@ export class Servers extends AbstractModal<Server> {
           components: [],
         });
       } catch (error) {
-        const messagePayload: WebhookEditMessageOptions = {
+        const messagePayload: InteractionEditReplyOptions = {
           components: [
             ...this.getInteractionStep(),
             new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
