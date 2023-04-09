@@ -51,6 +51,10 @@ export interface Detail {
     uuid: string;
     nickname: string;
   };
+  votes?: {
+    count: number;
+    lastVoted: number;
+  };
   playTimes: MinutesPlayed[];
   sanctions: {
     stats: {

@@ -104,6 +104,12 @@ export class Chuck {
               value: (totalPlayedTimes / 1440).toFixed(2).toString() + ' jours',
             },
             {
+              name: 'Votes',
+              value: playerDetail.votes
+                ? `${playerDetail.votes.count} fois.`
+                : "N'a pas encore voté",
+            },
+            {
               name: 'Première connexion',
               value: playerDetail.firstLogin.date_login
                 ? `Le ${new Date(
