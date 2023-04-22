@@ -123,33 +123,4 @@ export const modals: ModalConfig[] = [
       },
     ],
   },
-  {
-    title: 'Reboot horaire',
-    elements: [
-      {
-        id: 'schedule.reboot.0',
-        label: 'Première heure du reboot',
-        style: TextInputStyle.Short,
-        type: 'string',
-      },
-      {
-        id: 'schedule.reboot.1',
-        label: 'Deuxième heure du reboot',
-        style: TextInputStyle.Short,
-        type: 'string',
-      },
-      {
-        id: 'schedule.reboot.2',
-        label: 'Troisième heure du reboot',
-        style: TextInputStyle.Short,
-        type: 'string',
-      },
-      {
-        id: 'schedule.reboot.3',
-        label: 'Quatrième heure du reboot',
-        style: TextInputStyle.Short,
-        type: 'string',
-      },
-    ],
-  },
 ];
