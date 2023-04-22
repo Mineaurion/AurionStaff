@@ -185,7 +185,6 @@ module.exports = {
     'valid-typeof': 'off',
     'jsdoc/check-alignment': 'error',
     'jsdoc/check-indentation': 'error',
-    'jsdoc/newline-after-description': 'error',
     'jsdoc/no-types': 'error',
     'import/no-unused-modules': 'error',
     'import/newline-after-import': 'error',
