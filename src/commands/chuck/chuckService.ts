@@ -70,10 +70,17 @@ export class ChuckService {
     });
   }
 
-  public async getConnectionServer(): Promise<string[]> {
-    return http<string[]>(`${this.url}/connection/search/server`, {
-      headers: this.headers,
-    });
+  public async getConnectionServer(search?: string): Promise<string[]> {
+    const queryParams = new URLSearchParams();
+    if (search) {
+      queryParams.append('name', search);
+    }
+    return http<string[]>(
+      `${this.url}/connection/search/server?${queryParams.toString()}`,
+      {
+        headers: this.headers,
+      },
+    );
   }
 
   public async searchConnection(args: {

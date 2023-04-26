@@ -171,7 +171,7 @@ export class Chuck {
       description: 'Serveur de jeu',
       required: false,
     })
-    server: string | undefined,
+    inputServer: string | undefined,
     @SlashOption({
       name: 'uuid',
       autocomplete: true,
@@ -203,7 +203,9 @@ export class Chuck {
       const autoInteraction = interaction as AutocompleteInteraction;
       const focusedOption = autoInteraction.options.getFocused(true);
       if (focusedOption.name === 'server') {
-        const servers = await this.chuckService.getConnectionServer();
+        const servers = await this.chuckService.getConnectionServer(
+          inputServer,
+        );
         interactionRespond = servers.map((server) => {
           return { name: server, value: server };
         });
@@ -220,7 +222,7 @@ export class Chuck {
       const unique = uuid === undefined ? true : undefined;
       const searchConnections = await this.chuckService.searchConnection({
         uuid,
-        server,
+        server: inputServer,
         unique: unique ? 'true' : undefined,
         dateBegin: dateBegin ? new Date(dateBegin).toISOString() : undefined,
         dateEnd: dateEnd ? new Date(dateEnd).toISOString() : undefined,
