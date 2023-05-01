@@ -110,15 +110,19 @@ export class Pterodactyl {
           new ButtonBuilder()
             .setLabel('Start')
             .setStyle(ButtonStyle.Success)
-            .setCustomId('start-server'),
+            .setCustomId(ServerSignal.START + '-server'),
           new ButtonBuilder()
             .setLabel('Stop')
             .setStyle(ButtonStyle.Danger)
-            .setCustomId('stop-server'),
+            .setCustomId(ServerSignal.STOP + '-server'),
           new ButtonBuilder()
             .setLabel('Restart')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('restart-server'),
+            .setCustomId(ServerSignal.RESTART + '-server'),
+          new ButtonBuilder()
+            .setLabel('Kill')
+            .setStyle(ButtonStyle.Danger)
+            .setCustomId(ServerSignal.KILL + '-server'),
           new ButtonBuilder()
             .setLabel('Url')
             .setStyle(ButtonStyle.Link)
@@ -152,17 +156,20 @@ export class Pterodactyl {
     await interaction.editReply(messagePayload);
   }
 
-  @ButtonComponent({ id: 'start-server' })
-  startServer(interaction: ButtonInteraction): void {
-    this.sendPowerState(interaction, ServerSignal.START);
+  @ButtonComponent({ id: /(start|stop|restart|kill)-server/ })
+  async sendSignal(interaction: ButtonInteraction): Promise<void> {
+    const action = interaction.customId.split('-').at(0) as string;
+    if (this.isServerSignal(action)) {
+      await this.sendPowerState(interaction, action);
+    }
   }
-  @ButtonComponent({ id: 'stop-server' })
-  stopServer(interaction: ButtonInteraction): void {
-    this.sendPowerState(interaction, ServerSignal.STOP);
-  }
-  @ButtonComponent({ id: 'restart-server' })
-  restartServer(interaction: ButtonInteraction): void {
-    this.sendPowerState(interaction, ServerSignal.RESTART);
+
+  private isServerSignal(
+    maybeServerSignal: string,
+  ): maybeServerSignal is `${ServerSignal}` {
+    return Object.values(ServerSignal).includes(
+      maybeServerSignal as ServerSignal,
+    );
   }
 
   private async sendPowerState(
