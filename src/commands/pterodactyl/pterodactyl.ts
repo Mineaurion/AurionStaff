@@ -18,6 +18,7 @@ import { ServerListReponse, ServerResources } from './interface';
 enum ServerState {
   offline = '🔴',
   starting = '🟠',
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
   stopping = '🟠',
   running = '🟢',
 }

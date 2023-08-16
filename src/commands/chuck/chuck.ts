@@ -203,9 +203,8 @@ export class Chuck {
       const autoInteraction = interaction as AutocompleteInteraction;
       const focusedOption = autoInteraction.options.getFocused(true);
       if (focusedOption.name === 'server') {
-        const servers = await this.chuckService.getConnectionServer(
-          inputServer,
-        );
+        const servers =
+          await this.chuckService.getConnectionServer(inputServer);
         interactionRespond = servers.map((server) => {
           return { name: server, value: server };
         });

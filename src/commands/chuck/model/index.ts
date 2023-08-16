@@ -81,7 +81,6 @@ interface ConnectionDate {
 }
 
 export type Sanctions = Ban[] | Mute[] | Kick[] | Warn[];
-type Sanction = Ban | Mute | Kick | Warn;
 
 enum TypeSanctionEnum {
   Ban = 'ban',
