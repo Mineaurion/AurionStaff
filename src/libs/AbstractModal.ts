@@ -19,7 +19,7 @@ import {
 import { ModalConfig } from '../commands/serveurs/model';
 import { CacheLocal } from '../utils/cache_locale.js';
 import { strToBool } from '../utils/helper.js';
-import { unflatten } from 'flat';
+import { flatten, unflatten } from 'flat';
 import { format } from 'util';
 
 export type FlattenTypeModal = Record<string, string | boolean | number>;
@@ -63,7 +63,7 @@ export abstract class AbstractModal<T> {
         .setCustomId(element.id)
         .setLabel(element.label)
         .setStyle(element.style);
-      const editChoice: FlattenTypeModal = flat.flatten(
+      const editChoice: FlattenTypeModal = flatten(
         this.cacheLocal.get(
           format(this.cacheKeyEditChoice, interaction.user.id),
         ) || {},

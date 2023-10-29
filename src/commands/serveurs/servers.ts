@@ -26,7 +26,7 @@ import { Server } from '@mineaurion/api';
 import { AbstractModal, FlattenTypeModal } from '../../libs/AbstractModal.js';
 import { ServersService } from './serversService.js';
 import { format } from 'util';
-import flat from 'flat';
+import { flatten, unflatten } from 'flat';
 
 @Discord()
 @injectable()
@@ -140,7 +140,7 @@ export class Servers extends AbstractModal<Server> {
     interaction: StringSelectMenuInteraction,
   ): Promise<void> {
     await interaction.deferUpdate();
-    const server = flat.flatten(
+    const server = flatten(
       await this.service.getOneServer(parseInt(interaction.values[0])),
     );
     this.cacheLocal.set(
@@ -172,7 +172,7 @@ export class Servers extends AbstractModal<Server> {
   @ButtonComponent({ id: 'servers-modalButton-final' })
   async handleFinal(interaction: ButtonInteraction): Promise<void> {
     await interaction.deferUpdate();
-    const server = flat.unflatten<FlattenTypeModal, Server>(
+    const server = unflatten<FlattenTypeModal, Server>(
       this.cacheLocal.get(
         format(this.cacheKeyForm, interaction.user.id),
       ) as FlattenTypeModal,
