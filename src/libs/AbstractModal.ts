@@ -19,7 +19,7 @@ import {
 import { ModalConfig } from '../commands/serveurs/model';
 import { CacheLocal } from '../utils/cache_locale.js';
 import { strToBool } from '../utils/helper.js';
-import flat from 'flat';
+import { unflatten } from 'flat';
 import { format } from 'util';
 
 export type FlattenTypeModal = Record<string, string | boolean | number>;
@@ -153,7 +153,7 @@ export abstract class AbstractModal<T> {
     }
     await interaction.editReply({
       content: `\`\`\`JSON\n${JSON.stringify(
-        flat.unflatten(form),
+        unflatten(form),
         null,
         2,
       )}\n\`\`\``,
