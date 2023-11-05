@@ -1,4 +1,4 @@
-FROM node:20-alpine as base
+FROM node:21-alpine as base
 ARG GITHUB_TOKEN
 LABEL org.opencontainers.image.source=https://github.com/Mineaurion/AurionStaff
 WORKDIR /usr/src/app
